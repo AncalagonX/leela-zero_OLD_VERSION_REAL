@@ -212,7 +212,6 @@ void UCTNode::accumulate_eval(float eval) {
 
 UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool pondering_now, int playouts) {
 	UCTNode* best = nullptr;
-	//auto best_value = -1000.0; // replaced with next line:
 	auto best_value = std::numeric_limits<double>::lowest();
 	auto best_winrate = std::numeric_limits<double>::lowest();
 	auto best_puct = std::numeric_limits<double>::lowest();
@@ -232,11 +231,10 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 	}
 
 	auto numerator = std::sqrt((double)parentvisits);
-	//auto fpu_reduction = cfg_fpu_reduction * std::sqrt(total_visited_policy); // replaced with next 7 lines:
 	auto fpu_reduction = 0.0f;
-		// Lower the expected eval for moves that are likely not the best.
-			// Do not do this if we have introduced noise at this node exactly
-			// to explore more.
+	// Lower the expected eval for moves that are likely not the best.
+	// Do not do this if we have introduced noise at this node exactly
+	// to explore more.
 	if (!is_root || !cfg_noise) {
 		fpu_reduction = cfg_fpu_reduction * std::sqrt(total_visited_policy);
 	}
