@@ -266,8 +266,15 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 		//if (best_puct <= 0.000001) {
 		//	best_puct = 0.000001;
 		//}
-
 		auto value = winrate + puct;
+		if (movenum < 100) {
+			value = (winrate);
+		}
+
+
+	//TODO: This is the "coin flip" logic for randomized fuseki. I've disabled/commented it out for now, but it works straight away.
+	/*
+		auto value = winrate + puct; //NOTE: This line is duplicated above. Probably I shouldn't do that.
 		//myprintf("winrate %5.2f -> puct %5.2f\n", winrate, puct);
 		if (movenum < 20) {
 			int flip_coin = rand() % 80;
@@ -275,6 +282,12 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 				value = (winrate - (1.0 * puct)) + (1.0 * (2 * puct * (movenum / 19)));
 			}
 		}
+
+	*/
+
+		//TODO: THE FOLLOWING SECTION IS ALSO THE FUSEKI STUFF. JUST REMOVE THE ENTIRE COMMENT BLOCK TO REENABLE IT.
+
+		/*
 		assert(value > std::numeric_limits<double>::lowest());
 		assert(winrate > std::numeric_limits<double>::lowest());
 		assert(puct > std::numeric_limits<double>::lowest());
@@ -296,6 +309,7 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 			assert(best != nullptr);
 			return best;
 		}
+		*/
 
 		//assert(value > -1000.0); // replaced with next line:
 

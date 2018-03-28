@@ -690,7 +690,7 @@ size_t UCTSearch::prune_noncontenders(int elapsed_centis, int time_for_move, int
 			//myprintf("\n%.1fs total added_time\n", ((1.0f * added_time) / 100));
 		}
 		
-		//////////////////IF SCOREFIRST > SCORESECOND THEN DECREASE PUCT
+		//////////////////TODO: IF SCOREFIRST > SCORESECOND THEN DECREASE PUCT
 
 
 
@@ -737,13 +737,21 @@ size_t UCTSearch::prune_noncontenders(int elapsed_centis, int time_for_move, int
 		//if (cfg_fpu_reduction < 0 && static_cast<int>(m_playouts) > 1000) {
 		//	cfg_fpu_reduction = (cfg_fpu_reduction / 2) + 1;
 		//}
-		if (cfg_fpu_reduction < 0.50 && static_cast<int>(m_playouts) > 1000 && movenum < 20) {
-			cfg_fpu_reduction = cfg_fpu_reduction + 0.05;
-		}
-		if (cfg_fpu_reduction > 0.50 && movenum < 20) {
-			cfg_fpu_reduction = 0.50;
-		}
-		//added_time = 0;
+
+
+
+
+		//if (cfg_fpu_reduction < 0.50 && static_cast<int>(m_playouts) > 1000 && movenum < 20) {
+		//	cfg_fpu_reduction = cfg_fpu_reduction + 0.05;
+		//}
+		//if (cfg_fpu_reduction > 0.50 && movenum < 20) {
+		//	cfg_fpu_reduction = 0.50;
+		//}
+
+
+
+
+		added_time = 0;
 
 		//if (Nfirst_eval_Nsecond_eval_ratio < 1 && static_cast<int>(m_playouts) > 5000) {
 		//	added_time = (added_time + 300);
@@ -959,7 +967,7 @@ int UCTSearch::think(int color, passflag_t passflag) {
     // display search info
     myprintf("\n");
 
-    dump_stats(m_rootstate, *m_root, 5, 100, true);
+    dump_stats(m_rootstate, *m_root, 400, 400, true);
     Training::record(m_rootstate, *m_root);
 
     Time elapsed;
@@ -1024,7 +1032,7 @@ void UCTSearch::ponder() {
 	pondering_now = false;
     // display search info
     myprintf("\n");
-    dump_stats(m_rootstate, *m_root, 5, 100, true);
+    dump_stats(m_rootstate, *m_root, 5, 10, true);
 
     myprintf("\n%d visits, %d nodes\n\n", m_root->get_visits(), m_nodes.load());
 }
