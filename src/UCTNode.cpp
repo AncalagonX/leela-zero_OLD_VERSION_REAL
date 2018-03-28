@@ -29,6 +29,7 @@
 #include <numeric>
 #include <utility>
 #include <vector>
+#include <ctime>
 
 #include "UCTNode.h"
 #include "FastBoard.h"
@@ -123,7 +124,7 @@ void UCTNode::link_nodelist(std::atomic<int>& nodecount,
     }
 
     // Use best to worst order, so highest go first
-    std::stable_sort(rbegin(nodelist), rend(nodelist));
+	std::stable_sort(rbegin(nodelist), rend(nodelist));
 
     LOCK(get_mutex(), lock);
 
@@ -209,9 +210,12 @@ void UCTNode::accumulate_eval(float eval) {
     atomic_add(m_blackevals, (double)eval);
 }
 
-UCTNode* UCTNode::uct_select_child(int color) {
+UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool pondering_now) {
     UCTNode* best = nullptr;
-    auto best_value = -1000.0;
+    //auto best_value = -1000.0; // replaced with next line:
+	auto best_value = std::numeric_limits<double>::lowest();
+	auto best_winrate = std::numeric_limits<double>::lowest();
+	auto best_puct = std::numeric_limits<double>::lowest();
 
     LOCK(get_mutex(), lock);
 
@@ -228,29 +232,90 @@ UCTNode* UCTNode::uct_select_child(int color) {
     }
 
     auto numerator = std::sqrt((double)parentvisits);
-    auto fpu_reduction = cfg_fpu_reduction * std::sqrt(total_visited_policy);
+    //auto fpu_reduction = cfg_fpu_reduction * std::sqrt(total_visited_policy); // replaced with next 7 lines:
+	auto fpu_reduction = 0.0f;
+	    // Lower the expected eval for moves that are likely not the best.
+		    // Do not do this if we have introduced noise at this node exactly
+		    // to explore more.
+		if (!is_root || !cfg_noise) {
+		fpu_reduction = cfg_fpu_reduction * std::sqrt(total_visited_policy);
+		}
+
     // Estimated eval for unknown nodes = original parent NN eval - reduction
     auto fpu_eval = get_net_eval(color) - fpu_reduction;
 
-    for (const auto& child : m_children) {
-        if (!child->active()) {
-            continue;
-        }
+	for (const auto& child : m_children) {
+		if (!child->active()) {
+			continue;
+		}
 
-        float winrate = fpu_eval;
-        if (child->get_visits() > 0) {
-            winrate = child->get_eval(color);
-        }
-        auto psa = child->get_score();
-        auto denom = 1.0 + child->get_visits();
-        auto puct = cfg_puct * psa * (numerator / denom);
-        auto value = winrate + puct;
-        assert(value > -1000.0);
+		float winrate = fpu_eval;
 
-        if (value > best_value) {
-            best_value = value;
-            best = child.get();
-        }
+		if (child->get_visits() > 0) {
+			winrate = child->get_eval(color);
+		}
+		auto psa = child->get_score();
+		auto denom = 1.0 + child->get_visits();
+		auto puct = cfg_puct * psa * (numerator / denom);
+		//if (puct <= 0.000001) {
+		//	puct = 0.000001;
+		//}
+		//if (puct >= 0.01) {
+		//	puct = 0.01;
+		//}
+		//if (best_puct <= 0.000001) {
+		//	best_puct = 0.000001;
+		//}
+
+		auto value = winrate + puct;
+		//myprintf("winrate %5.2f -> puct %5.2f\n", winrate, puct);
+		if (movenum < 20) {
+			int flip_coin = rand() % 80;
+			if ((movenum / (1 + flip_coin)) <= 1) {
+				value = (winrate - (1.0 * puct)) + (1.0 * (2 * puct * (movenum / 19)));
+			}
+		}
+		assert(value > std::numeric_limits<double>::lowest());
+		assert(winrate > std::numeric_limits<double>::lowest());
+		assert(puct > std::numeric_limits<double>::lowest());
+		if (value >= (0.9 * best_value) && puct <= best_puct && movenum < -1) {
+			if (value > best_value) {
+				best_value = value;
+				best_puct = puct;
+				best_winrate = winrate;
+			}
+			best = child.get();
+			assert(best != nullptr);
+			return best;
+		}
+		else if (winrate >= (0.9 * winrate) && movenum < -1) {
+			best_value = value;
+			best_winrate = winrate;
+			best_puct = puct;
+			best = child.get();
+			assert(best != nullptr);
+			return best;
+		}
+
+		//assert(value > -1000.0); // replaced with next line:
+
+		//if (child->get_visits() == 0) {	// Get at least more than 0 visits
+		//	//best_value = value;
+		//	best = child.get();
+		//	assert(best != nullptr);
+		//	return best;
+		//}
+		//if (child->get_visits() >= 10 && child->get_visits() < 100) {	// Else if more than 10 visits, have at least 100 visits
+		//	//best_value = value;
+		//	best = child.get();
+		//	assert(best != nullptr);
+		//	return best;
+		//}
+
+		if (value > best_value) {
+			best_value = value;
+			best = child.get();
+		}
     }
 
     assert(best != nullptr);
@@ -263,6 +328,15 @@ public:
     NodeComp(int color) : m_color(color) {};
     bool operator()(const UCTNode::node_ptr_t& a,
                     const UCTNode::node_ptr_t& b) {
+
+		////////////Next Line:  FORCE RETURN PRIOR SCORE ONLY
+		/////New next line:  If visits are greater than 100, then sort on SCORE
+		// EVEN NEWER LINE: First sort by pure visits. Then sort by score IF visits are more than 100.
+		
+		a->get_visits() < b->get_visits();
+		if (a->get_visits() >= 100 && b->get_visits() >= 100) {
+		return a->get_eval(m_color) < b->get_eval(m_color);
+		} // test test2 test3 test4 test5
         // if visits are not same, sort on visits
         if (a->get_visits() != b->get_visits()) {
             return a->get_visits() < b->get_visits();
@@ -281,8 +355,13 @@ private:
 };
 
 void UCTNode::sort_children(int color) {
-    LOCK(get_mutex(), lock);
-    std::stable_sort(rbegin(m_children), rend(m_children), NodeComp(color));
+	LOCK(get_mutex(), lock);
+	std::stable_sort(rbegin(m_children), rend(m_children), NodeComp(color));
+}
+
+void UCTNode::sort_children_reverse(int color) {
+	LOCK(get_mutex(), lock);
+	std::stable_sort(begin(m_children), end(m_children), NodeComp(color));
 }
 
 UCTNode& UCTNode::get_best_root_child(int color) {
