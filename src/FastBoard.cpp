@@ -422,6 +422,12 @@ std::string FastBoard::move_to_text(int move) const {
         result << "error";
     }
 
+	//TODO: Padd move strings with 3 characters instead of being 2 or 3 characters (i.e. F4 vs F14)
+	//std::string result_padded = result.str();
+	//result_padded.insert(result_padded.begin(), 3 - result_padded.size(), ' ');
+
+	//return result_padded;
+
     return result.str();
 }
 
