@@ -78,7 +78,7 @@ public:
         on 64-bits.
     */
     static constexpr auto MAX_TREE_SIZE =
-        (sizeof(void*) == 4 ? 25'000'000 : 100'000'000);
+        (sizeof(void*) == 4 ? 100'000'000 : 500'000'000);
 
     UCTSearch(GameState& g);
     int think(int color, passflag_t passflag = NORMAL);
@@ -86,14 +86,20 @@ public:
     void set_visit_limit(int visits);
     void ponder();
     bool is_running() const;
-    int est_playouts_left(int elapsed_centis, int time_for_move) const;
-    size_t prune_noncontenders(int elapsed_centis = 0, int time_for_move = 0);
-    bool stop_thinking(int elapsed_centis = 0, int time_for_move = 0) const;
+
+	// TODO: REWRITE ALL MY ADDITIONS TO BE CLEANER, AND SEPARATE INTO INDIVIDUAL FEATURE COMMITS
+
+    int est_playouts_left(int elapsed_centis = 0, int time_for_move = 0, int playouts = 0) const;
+    size_t prune_noncontenders(int elapsed_centis = 0, int time_for_move = 0, int original_time_for_move = 0);
+	//bool stop_thinking(int elapsed_centis = 0, int time_for_move = 0) const;
+	//bool stop_thinking_pondering(int elapsed_centis = 0, int time_for_move = 0) const;
+	bool stop_thinking(int elapsed_centis = 0, int time_for_move = 0, int playouts = 0) const;
+	bool stop_thinking_pondering(int elapsed_centis = 0, int time_for_move = 0, int playouts = 0) const;
     void increment_playouts();
     SearchResult play_simulation(GameState& currstate, UCTNode* const node);
 
 private:
-    void dump_stats(FastState& state, UCTNode& parent);
+    void dump_stats(FastState& state, UCTNode& parent, int list_min, int list_max, bool tree_stats_bool);
     void tree_stats(const UCTNode& node);
     std::string get_pv(FastState& state, UCTNode& parent);
     void dump_analysis(int playouts);
