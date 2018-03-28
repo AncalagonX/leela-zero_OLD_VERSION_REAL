@@ -28,6 +28,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <ctime>
 
 #include "GTP.h"
 #include "GameState.h"
@@ -302,6 +303,7 @@ void init_global_objects() {
     // Doing this here avoids mixing in the thread_id, which
     // improves reproducibility across platforms.
     Random::get_Rng().seedrandom(cfg_rng_seed);
+	srand(time(0));
 
     NNCache::get_NNCache().set_size_from_playouts(cfg_max_playouts);
 
