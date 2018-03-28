@@ -79,7 +79,7 @@ void GTP::setup_default_parameters() {
     cfg_max_threads = std::max(1, std::min(SMP::get_num_cpus(), MAX_CPUS));
 #ifdef USE_OPENCL
     // If we will be GPU limited, using many threads won't help much.
-    cfg_num_threads = std::min(2, cfg_max_threads);
+	cfg_num_threads = std::min(2, cfg_max_threads);
 #else
     cfg_num_threads = cfg_max_threads;
 #endif
@@ -92,10 +92,10 @@ void GTP::setup_default_parameters() {
     cfg_sgemm_exhaustive = false;
     cfg_tune_only = false;
 #endif
-    cfg_puct = 0.8f;
-    cfg_softmax_temp = 1.0f;
-    cfg_fpu_reduction = 0.25f;
-    // see UCTSearch::should_resign
+	cfg_puct = 0.8f;
+	cfg_softmax_temp = 1.0f;
+	cfg_fpu_reduction = 0.25f;
+	// see UCTSearch::should_resign
     cfg_resignpct = -1;
     cfg_noise = false;
     cfg_random_cnt = 0;
@@ -462,6 +462,12 @@ bool GTP::execute(GameState & game, std::string xinput) {
         } else {
             gtp_fail_printf(id, "syntax not understood");
         }
+		if (cfg_allow_pondering) {
+			// now start pondering
+			if (!game.has_resigned()) {
+				search->ponder();
+			}
+		}
         return true;
     } else if (command.find("time_left") == 0) {
         std::istringstream cmdstream(command);
@@ -531,6 +537,12 @@ bool GTP::execute(GameState & game, std::string xinput) {
             Network::show_heatmap(&game, vec, false);
         }
         gtp_printf(id, "");
+		if (cfg_allow_pondering) {
+			// now start pondering
+			if (!game.has_resigned()) {
+				search->ponder();
+			}
+		}
         return true;
     } else if (command.find("fixed_handicap") == 0) {
         std::istringstream cmdstream(command);
