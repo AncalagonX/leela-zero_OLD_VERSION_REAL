@@ -102,7 +102,7 @@ private:
     std::atomic<std::int16_t> m_virtual_loss{0};
     std::atomic<int> m_visits{0};
     // UCT eval
-    float m_score;
+	float m_score;   // ORIGINAL LINE:     float m_score;
     // Original net eval for this node (not children).
     float m_net_eval{0.0f};
     std::atomic<double> m_blackevals{0.0};

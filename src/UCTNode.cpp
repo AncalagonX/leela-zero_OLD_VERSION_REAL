@@ -268,7 +268,7 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 		//}
 		auto value = winrate + puct;
 		if (movenum < 100) {
-			value = (winrate);
+			value = (winrate) + (0.01 * std::sqrt(puct));
 		}
 
 
