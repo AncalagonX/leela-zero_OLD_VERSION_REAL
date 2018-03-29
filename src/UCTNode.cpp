@@ -317,12 +317,12 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 		//	return best;
 		//}
 		if (is_root) {
-			while (child->get_visits() < 10) {
+			if (child->get_visits() < 10) {
 				best = child.get();
 				return best;
 			}
 		}
-		if (is_root && child->get_visits() >= 10) {
+		if (is_root && child->get_visits() >= 10 && m_visits > 5000) {
 			if (child->get_visits() < 100) {
 				if (winrate > best_winrate) {
 					best_winrate = winrate;
@@ -335,7 +335,7 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 				return best;
 			}
 		}
-		if (is_root && child->get_visits() >= 100) {
+		if (is_root && child->get_visits() >= 100 && m_visits > 10000) {
 			if (child->get_visits() < 1000) {
 				if (winrate > best_winrate) {
 					best_winrate = winrate;
@@ -398,7 +398,7 @@ public:
 		////////////Next Line:  FORCE RETURN PRIOR SCORE ONLY
 		/////New next line:  If visits are greater than 100, then sort on SCORE
 		// EVEN NEWER LINE: First sort by pure visits. Then sort by score IF visits are more than 100.
-		
+
 		if (a->get_eval(m_color) != b->get_eval(m_color)) {
 			return a->get_eval(m_color) < b->get_eval(m_color);
 		}
