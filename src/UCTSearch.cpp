@@ -122,7 +122,7 @@ void UCTSearch::update_root() {
 	int playouts3 = 0;
 	int playouts_stop3 = 0;
 	added_time = 0;
-	cfg_fpu_reduction = 0.0;
+	cfg_fpu_reduction = 0.1;
 	cfg_puct = 0.8;
 
 //#ifndef NDEBUG
@@ -878,12 +878,12 @@ int UCTSearch::think(int color, passflag_t passflag) {
     // set side to move
     m_rootstate.board.set_to_move(color);
 	const auto movenum = m_rootstate.get_movenum();
-	if (movenum <= 19) {
-		cfg_fpu_reduction = 0.0;
-	}
-	else {
-		cfg_fpu_reduction = 0.0;
-	}
+	//if (movenum <= 19) {
+	//	cfg_fpu_reduction = 0.25;
+	//}
+	//else {
+	//	cfg_fpu_reduction = 0.25;
+	//}
     // set up timing info
     Time start;
 
@@ -1000,7 +1000,7 @@ int UCTSearch::think(int color, passflag_t passflag) {
 
 void UCTSearch::ponder() {
 	update_root();
-	cfg_fpu_reduction = 0.0;
+	cfg_fpu_reduction = 0.05;
 	cfg_puct = 0.8;
 	Time start;
 	pondering_now = true;
