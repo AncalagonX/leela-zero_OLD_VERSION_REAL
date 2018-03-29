@@ -322,7 +322,7 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 				return best;
 			}
 		}
-		if (is_root && child->get_visits() >= 10 && m_visits < 1600 && m_visits > 400) {
+		if (is_root && child->get_visits() >= 1 && m_visits < 1600 && m_visits > 400) {
 			if (child->get_visits() < 100) {
 				//if (winrate > best_winrate) {
 				//	best_winrate = winrate;
@@ -337,6 +337,11 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 		}
 		if (is_root && child->get_visits() >= 100 && m_visits < 6400 && m_visits > 1600) {
 			if (child->get_visits() < 100) {
+				if (winrate > 0.95 * best_winrate) {
+					//best_winrate = winrate;
+					best = child.get();
+					return best;
+				}
 				if (winrate > best_winrate) {
 					best_winrate = winrate;
 					best = child.get();
@@ -425,9 +430,24 @@ public:
 		/////New next line:  If visits are greater than 100, then sort on SCORE
 		// EVEN NEWER LINE: First sort by pure visits. Then sort by score IF visits are more than 100.
 
+		
+		
+		
+		// Below code is good, I think. It sorts all visits > 100 by visitcount, then everything else by eval result
+		/*
 		if (a->get_eval(m_color) != b->get_eval(m_color)) {
+			if (a->get_visits() >= 100) {
+				return a->get_visits() < b->get_visits();
+			}
 			return a->get_eval(m_color) < b->get_eval(m_color);
 		}
+		*/
+
+
+
+
+
+
 		//if (a->get_visits() >= 100 && b->get_visits() >= 100) {
 		//return a->get_eval(m_color) < b->get_eval(m_color);
 		//} // test test2 test3 test4 test5
