@@ -337,6 +337,177 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 		//	}
 		//}
 		if (is_root && playouts < 6400 && playouts > 500) {
+			if (child->get_visits() <= 100) {
+				if ((winrate > (0.95 * best_winrate))) {
+					//best_winrate = winrate;
+					best = child.get();
+					if (winrate > best_winrate) {
+						best_winrate = winrate;
+					}
+					return best;
+				}
+				if (winrate > best_winrate) {
+					best_winrate = winrate;
+					best = child.get();
+					return best;
+				}
+				//if (value > best_value) {
+				//	best_value = value;
+				//	best = child.get();
+				//}
+			}
+			if (child->get_visits() <= 200) {
+				if ((winrate > (0.95 * best_winrate))) {
+					//best_winrate = winrate;
+					best = child.get();
+					if (winrate > best_winrate) {
+						best_winrate = winrate;
+					}
+					return best;
+				}
+				if (winrate > best_winrate) {
+					best_winrate = winrate;
+					best = child.get();
+					return best;
+				}
+				//if (value > best_value) {
+				//	best_value = value;
+				//	best = child.get();
+				//}
+			}
+			if (child->get_visits() <= 300) {
+				if ((winrate > (0.95 * best_winrate))) {
+					//best_winrate = winrate;
+					best = child.get();
+					if (winrate > best_winrate) {
+						best_winrate = winrate;
+					}
+					return best;
+				}
+				if (winrate > best_winrate) {
+					best_winrate = winrate;
+					best = child.get();
+					return best;
+				}
+				//if (value > best_value) {
+				//	best_value = value;
+				//	best = child.get();
+				//}
+			}
+			if (child->get_visits() <= 400) {
+				if ((winrate > (0.95 * best_winrate))) {
+					//best_winrate = winrate;
+					best = child.get();
+					if (winrate > best_winrate) {
+						best_winrate = winrate;
+					}
+					return best;
+				}
+				if (winrate > best_winrate) {
+					best_winrate = winrate;
+					best = child.get();
+					return best;
+				}
+				//if (value > best_value) {
+				//	best_value = value;
+				//	best = child.get();
+				//}
+			}
+			if (child->get_visits() <= 500) {
+				if ((winrate > (0.95 * best_winrate))) {
+					//best_winrate = winrate;
+					best = child.get();
+					if (winrate > best_winrate) {
+						best_winrate = winrate;
+					}
+					return best;
+				}
+				if (winrate > best_winrate) {
+					best_winrate = winrate;
+					best = child.get();
+					return best;
+				}
+				//if (value > best_value) {
+				//	best_value = value;
+				//	best = child.get();
+				//}
+			}
+			if (child->get_visits() <= 600) {
+				if ((winrate > (0.95 * best_winrate))) {
+					//best_winrate = winrate;
+					best = child.get();
+					if (winrate > best_winrate) {
+						best_winrate = winrate;
+					}
+					return best;
+				}
+				if (winrate > best_winrate) {
+					best_winrate = winrate;
+					best = child.get();
+					return best;
+				}
+				//if (value > best_value) {
+				//	best_value = value;
+				//	best = child.get();
+				//}
+			}
+			if (child->get_visits() <= 700) {
+				if ((winrate > (0.95 * best_winrate))) {
+					//best_winrate = winrate;
+					best = child.get();
+					if (winrate > best_winrate) {
+						best_winrate = winrate;
+					}
+					return best;
+				}
+				if (winrate > best_winrate) {
+					best_winrate = winrate;
+					best = child.get();
+					return best;
+				}
+				//if (value > best_value) {
+				//	best_value = value;
+				//	best = child.get();
+				//}
+			}
+			if (child->get_visits() <= 800) {
+				if ((winrate > (0.95 * best_winrate))) {
+					//best_winrate = winrate;
+					best = child.get();
+					if (winrate > best_winrate) {
+						best_winrate = winrate;
+					}
+					return best;
+				}
+				if (winrate > best_winrate) {
+					best_winrate = winrate;
+					best = child.get();
+					return best;
+				}
+				//if (value > best_value) {
+				//	best_value = value;
+				//	best = child.get();
+				//}
+			}
+			if (child->get_visits() <= 900) {
+				if ((winrate > (0.95 * best_winrate))) {
+					//best_winrate = winrate;
+					best = child.get();
+					if (winrate > best_winrate) {
+						best_winrate = winrate;
+					}
+					return best;
+				}
+				if (winrate > best_winrate) {
+					best_winrate = winrate;
+					best = child.get();
+					return best;
+				}
+				//if (value > best_value) {
+				//	best_value = value;
+				//	best = child.get();
+				//}
+			}
 			if (child->get_visits() <= 1000) {
 				if ((winrate > (0.95 * best_winrate))) {
 					//best_winrate = winrate;
@@ -349,12 +520,12 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 				if (winrate > best_winrate) {
 					best_winrate = winrate;
 					best = child.get();
+					return best;
 				}
 				//if (value > best_value) {
 				//	best_value = value;
 				//	best = child.get();
 				//}
-				return best;
 			}
 		}
 
@@ -471,10 +642,33 @@ public:
 
 
 
-		if (a->get_visits() >= 100 && a->get_visits() < 1000 && b->get_visits() >= 100 && b->get_visits() < 1000) {
+		if (a->get_visits() >= 100 && a->get_visits() < 200 && b->get_visits() >= 100 && b->get_visits() < 200) {
 			return a->get_eval(m_color) < b->get_eval(m_color);
 		}
-
+		if (a->get_visits() >= 200 && a->get_visits() < 300 && b->get_visits() >= 200 && b->get_visits() < 300) {
+			return a->get_eval(m_color) < b->get_eval(m_color);
+		}
+		if (a->get_visits() >= 300 && a->get_visits() < 400 && b->get_visits() >= 300 && b->get_visits() < 400) {
+			return a->get_eval(m_color) < b->get_eval(m_color);
+		}
+		if (a->get_visits() >= 400 && a->get_visits() < 500 && b->get_visits() >= 400 && b->get_visits() < 500) {
+			return a->get_eval(m_color) < b->get_eval(m_color);
+		}
+		if (a->get_visits() >= 500 && a->get_visits() < 600 && b->get_visits() >= 500 && b->get_visits() < 600) {
+			return a->get_eval(m_color) < b->get_eval(m_color);
+		}
+		if (a->get_visits() >= 600 && a->get_visits() < 700 && b->get_visits() >= 600 && b->get_visits() < 700) {
+			return a->get_eval(m_color) < b->get_eval(m_color);
+		}
+		if (a->get_visits() >= 700 && a->get_visits() < 800 && b->get_visits() >= 700 && b->get_visits() < 800) {
+			return a->get_eval(m_color) < b->get_eval(m_color);
+		}
+		if (a->get_visits() >= 800 && a->get_visits() < 900 && b->get_visits() >= 800 && b->get_visits() < 900) {
+			return a->get_eval(m_color) < b->get_eval(m_color);
+		}
+		if (a->get_visits() >= 900 && a->get_visits() < 1000 && b->get_visits() >= 900 && b->get_visits() < 1000) {
+			return a->get_eval(m_color) < b->get_eval(m_color);
+		}
 		if (a->get_visits() >= 1000 && b->get_visits() >= 1000) {
 			return a->get_eval(m_color) < b->get_eval(m_color);
 		}
