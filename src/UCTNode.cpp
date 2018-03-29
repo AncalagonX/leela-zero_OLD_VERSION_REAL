@@ -322,24 +322,27 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 				return best;
 			}
 		}
-		if (is_root && m_visits < 1600 && m_visits > 500) {
-			if (is_root && child->get_visits() < 100) {
-				//if (winrate > best_winrate) {
-				//	best_winrate = winrate;
-				//	best = child.get();
-				//}
-				if (value > best_value) {
-					best_value = value;
-					best = child.get();
-				}
-				return best;
-			}
-		}
-		if (is_root && m_visits > 1600) {
-			if (child->get_visits() > 100) {
-				if (winrate > 0.95 * best_winrate) {
+		//if (is_root && m_visits <= 3200 && m_visits > 400) {
+		//	if (is_root && child->get_visits() < 100 && parentvisits < 100) {
+		//		//if (winrate > best_winrate) {
+		//		//	best_winrate = winrate;
+		//		//	best = child.get();
+		//		//}
+		//		if (value > best_value) {
+		//			best_value = value;
+		//			best = child.get();
+		//		}
+		//		return best;
+		//	}
+		//}
+		if (is_root && m_visits < 6400) {
+			if (child->get_visits() >= 0) {
+				if ((winrate > (0.95 * best_winrate))) {
 					//best_winrate = winrate;
 					best = child.get();
+					if (winrate > best_winrate) {
+						best_winrate = winrate;
+					}
 					return best;
 				}
 				if (winrate > best_winrate) {
@@ -353,6 +356,19 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 				return best;
 			}
 		}
+
+
+
+
+
+
+
+
+
+
+
+
+
 		//if (is_root && child->get_visits() >= 10 && m_visits > 6400) {
 		//	if (child->get_visits() < 100) {
 		//		if (winrate > best_winrate) {
