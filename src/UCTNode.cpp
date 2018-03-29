@@ -268,34 +268,39 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 		//}
 
 		auto value = winrate + puct;
-		//myprintf("winrate %5.2f -> puct %5.2f\n", winrate, puct);
-		if (movenum < 20) {
-			int flip_coin = rand() % 80;
-			if ((movenum / (1 + flip_coin)) <= 1) {
-				value = (winrate - (1.0 * puct)) + (1.0 * (2 * puct * (movenum / 19)));
-			}
-		}
+
+
+		//if (movenum < 20) {
+		//	int flip_coin = rand() % 80;
+		//	if ((movenum / (1 + flip_coin)) <= 1) {
+		//		value = (winrate - (puct)) + (2 * puct * (movenum / 19));
+		//	}
+		//}
+
+
+
+
 		assert(value > std::numeric_limits<double>::lowest());
 		assert(winrate > std::numeric_limits<double>::lowest());
 		assert(puct > std::numeric_limits<double>::lowest());
-		if (value >= (0.9 * best_value) && puct <= best_puct && movenum < -1) {
-			if (value > best_value) {
-				best_value = value;
-				best_puct = puct;
-				best_winrate = winrate;
-			}
-			best = child.get();
-			assert(best != nullptr);
-			return best;
-		}
-		else if (winrate >= (0.9 * winrate) && movenum < -1) {
-			best_value = value;
-			best_winrate = winrate;
-			best_puct = puct;
-			best = child.get();
-			assert(best != nullptr);
-			return best;
-		}
+		//if (value >= (0.9 * best_value) && puct <= best_puct && movenum < -1) {
+		//	if (value > best_value) {
+		//		best_value = value;
+		//		best_puct = puct;
+		//		best_winrate = winrate;
+		//	}
+		//	best = child.get();
+		//	assert(best != nullptr);
+		//	return best;
+		//}
+		//else if (winrate >= (0.9 * winrate) && movenum < -1) {
+		//	best_value = value;
+		//	best_winrate = winrate;
+		//	best_puct = puct;
+		//	best = child.get();
+		//	assert(best != nullptr);
+		//	return best;
+		//}
 
 		//assert(value > -1000.0); // replaced with next line:
 
@@ -311,8 +316,42 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 		//	assert(best != nullptr);
 		//	return best;
 		//}
-
-		if (value > best_value) {
+		if (is_root && child->get_visits() <= 10) {
+			best = child.get();
+			assert(best != nullptr);
+			return best;
+		}
+		else if (winrate > best_winrate && is_root && child->get_visits() <= 100) {
+			best_winrate = winrate;
+			best = child.get();
+			assert(best != nullptr);
+			return best;
+		}
+		else if (winrate > (0.9 * best_winrate) && is_root && child->get_visits() <= 100) {
+			//best_winrate = winrate;
+			best = child.get();
+			assert(best != nullptr);
+			return best;
+		}
+		else if (value > best_value && is_root && child->get_visits() <= 100) {
+			best_value = value;
+			best = child.get();
+			assert(best != nullptr);
+			return best;
+		}
+		else if (value > (0.9 * best_value) && is_root && child->get_visits() <= 100) {
+			//best_value = value;
+			best = child.get();
+			assert(best != nullptr);
+			return best;
+		}
+		else if (value > best_value && is_root && child->get_visits() <= 1000) {
+			best_value = value;
+			best = child.get();
+			assert(best != nullptr);
+			return best;
+		}
+		else if (value > best_value) {
 			best_value = value;
 			best = child.get();
 		}
@@ -334,9 +373,12 @@ public:
 		// EVEN NEWER LINE: First sort by pure visits. Then sort by score IF visits are more than 100.
 		
 		a->get_visits() < b->get_visits();
-		if (a->get_visits() >= 100 && b->get_visits() >= 100) {
-		return a->get_eval(m_color) < b->get_eval(m_color);
-		} // test test2 test3 test4 test5
+		if (a->get_eval(m_color) != b->get_eval(m_color)) {
+			return a->get_eval(m_color) < b->get_eval(m_color);
+		}
+		//if (a->get_visits() >= 100 && b->get_visits() >= 100) {
+		//return a->get_eval(m_color) < b->get_eval(m_color);
+		//} // test test2 test3 test4 test5
         // if visits are not same, sort on visits
         if (a->get_visits() != b->get_visits()) {
             return a->get_visits() < b->get_visits();
