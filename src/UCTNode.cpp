@@ -211,38 +211,38 @@ void UCTNode::accumulate_eval(float eval) {
 }
 
 UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool pondering_now) {
-    UCTNode* best = nullptr;
-    //auto best_value = -1000.0; // replaced with next line:
+	UCTNode* best = nullptr;
+	//auto best_value = -1000.0; // replaced with next line:
 	auto best_value = std::numeric_limits<double>::lowest();
 	auto best_winrate = std::numeric_limits<double>::lowest();
 	auto best_puct = std::numeric_limits<double>::lowest();
 
-    LOCK(get_mutex(), lock);
+	LOCK(get_mutex(), lock);
 
-    // Count parentvisits manually to avoid issues with transpositions.
-    auto total_visited_policy = 0.0f;
-    auto parentvisits = size_t{0};
-    for (const auto& child : m_children) {
-        if (child->valid()) {
-            parentvisits += child->get_visits();
-            if (child->get_visits() > 0) {
-                total_visited_policy += child->get_score();
-            }
-        }
-    }
-
-    auto numerator = std::sqrt((double)parentvisits);
-    //auto fpu_reduction = cfg_fpu_reduction * std::sqrt(total_visited_policy); // replaced with next 7 lines:
-	auto fpu_reduction = 0.0f;
-	    // Lower the expected eval for moves that are likely not the best.
-		    // Do not do this if we have introduced noise at this node exactly
-		    // to explore more.
-		if (!is_root || !cfg_noise) {
-		fpu_reduction = cfg_fpu_reduction * std::sqrt(total_visited_policy);
+	// Count parentvisits manually to avoid issues with transpositions.
+	auto total_visited_policy = 0.0f;
+	auto parentvisits = size_t{ 0 };
+	for (const auto& child : m_children) {
+		if (child->valid()) {
+			parentvisits += child->get_visits();
+			if (child->get_visits() > 0) {
+				total_visited_policy += child->get_score();
+			}
 		}
+	}
 
-    // Estimated eval for unknown nodes = original parent NN eval - reduction
-    auto fpu_eval = get_net_eval(color) - fpu_reduction;
+	auto numerator = std::sqrt((double)parentvisits);
+	//auto fpu_reduction = cfg_fpu_reduction * std::sqrt(total_visited_policy); // replaced with next 7 lines:
+	auto fpu_reduction = 0.0f;
+		// Lower the expected eval for moves that are likely not the best.
+			// Do not do this if we have introduced noise at this node exactly
+			// to explore more.
+	if (!is_root || !cfg_noise) {
+		fpu_reduction = cfg_fpu_reduction * std::sqrt(total_visited_policy);
+	}
+
+// Estimated eval for unknown nodes = original parent NN eval - reduction
+	auto fpu_eval = get_net_eval(color) - fpu_reduction;
 
 	for (const auto& child : m_children) {
 		if (!child->active()) {
@@ -316,46 +316,73 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 		//	assert(best != nullptr);
 		//	return best;
 		//}
-		if (is_root && child->get_visits() <= 10) {
-			best = child.get();
-			assert(best != nullptr);
-			return best;
+		if (is_root) {
+			while (child->get_visits() < 10) {
+				best = child.get();
+				return best;
+			}
 		}
-		else if (winrate > best_winrate && is_root && child->get_visits() <= 100) {
-			best_winrate = winrate;
-			best = child.get();
-			assert(best != nullptr);
-			return best;
+		if (is_root && child->get_visits() >= 10) {
+			if (child->get_visits() < 100) {
+				if (winrate > best_winrate) {
+					best_winrate = winrate;
+					best = child.get();
+				}
+				else if (value > best_value) {
+					best_value = value;
+					best = child.get();
+				}
+				return best;
+			}
 		}
-		else if (winrate > (0.9 * best_winrate) && is_root && child->get_visits() <= 100) {
-			//best_winrate = winrate;
-			best = child.get();
-			assert(best != nullptr);
-			return best;
+		if (is_root && child->get_visits() >= 100) {
+			if (child->get_visits() < 1000) {
+				if (winrate > best_winrate) {
+					best_winrate = winrate;
+					best = child.get();
+				}
+				else if (value > best_value) {
+					best_value = value;
+					best = child.get();
+				}
+				return best;
+			}
 		}
-		else if (value > best_value && is_root && child->get_visits() <= 100) {
-			best_value = value;
-			best = child.get();
-			assert(best != nullptr);
-			return best;
-		}
-		else if (value > (0.9 * best_value) && is_root && child->get_visits() <= 100) {
-			//best_value = value;
-			best = child.get();
-			assert(best != nullptr);
-			return best;
-		}
-		else if (value > best_value && is_root && child->get_visits() <= 1000) {
-			best_value = value;
-			best = child.get();
-			assert(best != nullptr);
-			return best;
-		}
-		else if (value > best_value) {
+		if (value > best_value) {
 			best_value = value;
 			best = child.get();
 		}
-    }
+		
+		
+		
+		//if (is_root && child->get_visits() < 10) {
+		//	best = child.get();
+		//}
+		//else if (winrate > best_winrate && is_root && child->get_visits() < 100) {
+		//	best_winrate = winrate;
+		//	best = child.get();
+		//}
+		//else if (winrate > (0.9 * best_winrate) && is_root && child->get_visits() < 100) {
+		//	//best_winrate = winrate;
+		//	best = child.get();
+		//}
+		//else if (value > best_value && is_root && child->get_visits() < 100) {
+		//	best_value = value;
+		//	best = child.get();
+		//}
+		//else if (value > (0.9 * best_value) && is_root && child->get_visits() < 100) {
+		//	//best_value = value;
+		//	best = child.get();
+		//}
+		//else if (value > best_value && is_root && child->get_visits() < 1000) {
+		//	best_value = value;
+		//	best = child.get();
+		//}
+		//else if (value > best_value) {
+		//	best_value = value;
+		//	best = child.get();
+		//}
+	}
 
     assert(best != nullptr);
     return best;
@@ -372,7 +399,6 @@ public:
 		/////New next line:  If visits are greater than 100, then sort on SCORE
 		// EVEN NEWER LINE: First sort by pure visits. Then sort by score IF visits are more than 100.
 		
-		a->get_visits() < b->get_visits();
 		if (a->get_eval(m_color) != b->get_eval(m_color)) {
 			return a->get_eval(m_color) < b->get_eval(m_color);
 		}

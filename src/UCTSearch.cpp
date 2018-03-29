@@ -168,8 +168,24 @@ SearchResult UCTSearch::play_simulation(GameState & currstate,
 		}
 	}
 
+	//if (node == m_root.get() && node->get_visits() < 10 && !result.valid()) {
+	//		auto next = node->uct_select_child(color, node == m_root.get(), movenum, pondering_now);
+
+	//	if (next != nullptr) {
+	//		auto move = next->get_move();
+
+	//		currstate.play_move(move);
+	//		if (move != FastBoard::PASS && currstate.superko()) {
+	//			next->invalidate();
+	//		}
+	//		else {
+	//			result = play_simulation(currstate, next);
+	//		}
+	//	}
+	//}
+
     if (node->has_children() && !result.valid()) {
-        auto next = node->uct_select_child(color, node == m_root.get(), movenum, pondering_now);
+		auto next = node->uct_select_child(color, node == m_root.get(), movenum, pondering_now);
 
         if (next != nullptr) {
             auto move = next->get_move();
@@ -925,7 +941,9 @@ int UCTSearch::think(int color, passflag_t passflag) {
             last_update = elapsed_centis;
             //dump_analysis(static_cast<int>(m_playouts));
 			dump_stats(m_rootstate, *m_root, 2, 2, false);
-			myprintf("\ncfg_PUCT: %.2f\n -> cfg_FPU_reduction: %.2f\n", cfg_puct, cfg_fpu_reduction);
+			if (cfg_puct != 0.8 || cfg_fpu_reduction != 0.25) {
+				myprintf("\ncfg_PUCT: %.2f -> cfg_FPU_reduction: %.2f\n", cfg_puct, cfg_fpu_reduction);
+			}
         }
         keeprunning  = is_running();
 		//if ((m_playouts * 100.0) / (elapsed_centis + 1) > 2000) {
@@ -1012,7 +1030,9 @@ void UCTSearch::ponder() {
 			last_update = elapsed_centis;
 			//dump_analysis(static_cast<int>(m_playouts));
 			dump_stats(m_rootstate, *m_root, 2, 2, false);
-			myprintf("\ncfg_PUCT: %.2f\n -> cfg_FPU_reduction: %.2f\n", cfg_puct, cfg_fpu_reduction);
+			if (cfg_puct != 0.8 || cfg_fpu_reduction != 0.25) {
+				myprintf("\ncfg_PUCT: %.2f -> cfg_FPU_reduction: %.2f\n", cfg_puct, cfg_fpu_reduction);
+			}
 		}
 
 
