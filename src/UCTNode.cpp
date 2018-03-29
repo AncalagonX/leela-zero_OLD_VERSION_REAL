@@ -210,7 +210,7 @@ void UCTNode::accumulate_eval(float eval) {
     atomic_add(m_blackevals, (double)eval);
 }
 
-UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool pondering_now) {
+UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool pondering_now, int playouts) {
 	UCTNode* best = nullptr;
 	//auto best_value = -1000.0; // replaced with next line:
 	auto best_value = std::numeric_limits<double>::lowest();
@@ -316,6 +316,7 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 		//	assert(best != nullptr);
 		//	return best;
 		//}
+
 		if (is_root) {
 			if (is_root && child->get_visits() < 1) {
 				best = child.get();
@@ -335,8 +336,8 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 		//		return best;
 		//	}
 		//}
-		if (is_root && m_visits < 6400) {
-			if (child->get_visits() >= 0) {
+		if (is_root && m_visits < 6400 && m_visits > 500) {
+			if (child->get_visits() <= 1000) {
 				if ((winrate > (0.95 * best_winrate))) {
 					//best_winrate = winrate;
 					best = child.get();
@@ -395,6 +396,20 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 		//		return best;
 		//	}
 		//}
+
+		//if (winrate > best_winrate && m_visits > 500) {
+		//	best_winrate = winrate;
+		//	best = child.get();
+		//	assert(best != nullptr);
+		//	return best;
+		//}
+
+		if (parentvisits <= 1) {
+			best = child.get();
+			return best;
+		}
+
+
 		if (value > best_value) {
 			best_value = value;
 			best = child.get();

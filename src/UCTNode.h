@@ -50,7 +50,7 @@ public:
 	void sort_children(int color);
 	void sort_children_reverse(int color);
     UCTNode& get_best_root_child(int color);
-    UCTNode* uct_select_child(int color, bool is_root, int movenum, bool pondering_now);
+    UCTNode* uct_select_child(int color, bool is_root, int movenum, bool pondering_now, int playouts);
 
     size_t count_nodes() const;
     SMP::Mutex& get_mutex();
