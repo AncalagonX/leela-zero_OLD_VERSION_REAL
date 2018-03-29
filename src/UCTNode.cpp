@@ -336,7 +336,7 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 		//		return best;
 		//	}
 		//}
-		if (is_root && m_visits < 6400 && m_visits > 500) {
+		if (is_root && playouts < 6400 && playouts > 500) {
 			if (child->get_visits() <= 1000) {
 				if ((winrate > (0.95 * best_winrate))) {
 					//best_winrate = winrate;
@@ -464,24 +464,21 @@ public:
 		
 		
 		
-		// Below code is good, I think. It sorts all visits > 100 by visitcount, then everything else by eval result
-		/*
-		if (a->get_eval(m_color) != b->get_eval(m_color)) {
-			if (a->get_visits() >= 100) {
-				return a->get_visits() < b->get_visits();
-			}
+		// Below code is good, I think. It sorts everything greater than 1000 visits by eval result	
+
+
+
+
+
+
+		if (a->get_visits() >= 100 && a->get_visits() < 1000 && b->get_visits() >= 100 && b->get_visits() < 1000) {
 			return a->get_eval(m_color) < b->get_eval(m_color);
 		}
-		*/
 
-
-
-
-
-
-		//if (a->get_visits() >= 100 && b->get_visits() >= 100) {
-		//return a->get_eval(m_color) < b->get_eval(m_color);
-		//} // test test2 test3 test4 test5
+		if (a->get_visits() >= 1000 && b->get_visits() >= 1000) {
+			return a->get_eval(m_color) < b->get_eval(m_color);
+		}
+		// test test2 test3 test4 test5
         // if visits are not same, sort on visits
         if (a->get_visits() != b->get_visits()) {
             return a->get_visits() < b->get_visits();
