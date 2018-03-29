@@ -737,12 +737,14 @@ size_t UCTSearch::prune_noncontenders(int elapsed_centis, int time_for_move, int
 		//if (cfg_fpu_reduction < 0 && static_cast<int>(m_playouts) > 1000) {
 		//	cfg_fpu_reduction = (cfg_fpu_reduction / 2) + 1;
 		//}
-		if (cfg_fpu_reduction < 0.50 && static_cast<int>(m_playouts) > 1000 && movenum < 20) {
-			cfg_fpu_reduction = cfg_fpu_reduction + 0.05;
-		}
-		if (cfg_fpu_reduction > 0.50 && movenum < 20) {
-			cfg_fpu_reduction = 0.50;
-		}
+
+		//if (cfg_fpu_reduction < 0.50 && static_cast<int>(m_playouts) > 1000 && movenum < 20) {
+		//	cfg_fpu_reduction = cfg_fpu_reduction + 0.05;
+		//}
+		//if (cfg_fpu_reduction > 0.50 && movenum < 20) {
+		//	cfg_fpu_reduction = 0.50;
+		//}
+
 		//added_time = 0;
 
 		//if (Nfirst_eval_Nsecond_eval_ratio < 1 && static_cast<int>(m_playouts) > 5000) {
@@ -861,7 +863,7 @@ int UCTSearch::think(int color, passflag_t passflag) {
     m_rootstate.board.set_to_move(color);
 	const auto movenum = m_rootstate.get_movenum();
 	if (movenum <= 19) {
-		cfg_fpu_reduction = -0.10;
+		cfg_fpu_reduction = 0.25;
 	}
 	else {
 		cfg_fpu_reduction = 0.25;
