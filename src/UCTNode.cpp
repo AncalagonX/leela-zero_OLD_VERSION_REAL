@@ -358,8 +358,9 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 				//	best = child.get();
 				//}
 			}
-			if (child->get_visits() <= (200) && child->get_visits() > (100)) {
-				if ((winrate > (0.955 * best_winrate))) {
+			//if (max_playouts_til_regular_value >= 1100 && child->get_visits() <= (200) && child->get_visits() > (100)) {
+			if (playouts < max_playouts_til_regular_value && playouts >= 1100 && child->get_visits() <= (200)) {
+				if ((winrate > (0.98 * best_winrate))) {
 					//best_winrate = winrate;
 					best = child.get();
 					if (winrate > best_winrate) {
