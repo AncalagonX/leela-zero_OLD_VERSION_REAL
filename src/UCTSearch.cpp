@@ -122,7 +122,7 @@ void UCTSearch::update_root() {
 	int playouts3 = 0;
 	int playouts_stop3 = 0;
 	added_time = 0;
-	cfg_fpu_reduction = 0.5;
+	cfg_fpu_reduction = 0.25;
 	cfg_puct = 0.8;
 
 //#ifndef NDEBUG
