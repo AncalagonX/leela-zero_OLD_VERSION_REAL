@@ -658,6 +658,9 @@ public:
 		if (a->get_visits() >= 200 && a->get_visits() < 300 && b->get_visits() >= 200 && b->get_visits() < 300) {
 			return a->get_eval(m_color) < b->get_eval(m_color);
 		}
+
+		//////////////////////////////////////
+		/*
 		if (a->get_visits() >= 300 && a->get_visits() < 400 && b->get_visits() >= 300 && b->get_visits() < 400) {
 			return a->get_eval(m_color) < b->get_eval(m_color);
 		}
@@ -682,6 +685,9 @@ public:
 		if (a->get_visits() >= 1000 && b->get_visits() >= 1000) {
 			return a->get_eval(m_color) < b->get_eval(m_color);
 		}
+
+		*/
+
 		// test test2 test3 test4 test5
         // if visits are not same, sort on visits
         if (a->get_visits() != b->get_visits()) {
