@@ -336,8 +336,10 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 		//		return best;
 		//	}
 		//}
-		if (is_root && playouts < 6400 && playouts > 500) {
-			if (child->get_visits() <= 100) {
+		int max_playouts_til_regular_value = 1600;
+		int mpt = max_playouts_til_regular_value;
+		if (is_root && playouts < max_playouts_til_regular_value && playouts > 500) {
+			if (child->get_visits() <= (mpt / 64)) {
 				if ((winrate > (0.95 * best_winrate))) {
 					//best_winrate = winrate;
 					best = child.get();
@@ -356,7 +358,7 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 				//	best = child.get();
 				//}
 			}
-			if (child->get_visits() <= 200) {
+			if (child->get_visits() <= (mpt / 32) && child->get_visits() > (mpt / 64)) {
 				if ((winrate > (0.955 * best_winrate))) {
 					//best_winrate = winrate;
 					best = child.get();
@@ -375,7 +377,12 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 				//	best = child.get();
 				//}
 			}
-			if (child->get_visits() <= 300) {
+
+
+			/////////////////////////////////////////////////////////////////////
+			/* Temporarily not used, to test lower playout limits
+
+			if (child->get_visits() <= 300 && child->get_visits() > 200) {
 				if ((winrate > (0.96 * best_winrate))) {
 					//best_winrate = winrate;
 					best = child.get();
@@ -394,7 +401,7 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 				//	best = child.get();
 				//}
 			}
-			if (child->get_visits() <= 400) {
+			if (child->get_visits() <= 400 && child->get_visits() > 300) {
 				if ((winrate > (0.965 * best_winrate))) {
 					//best_winrate = winrate;
 					best = child.get();
@@ -413,7 +420,7 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 				//	best = child.get();
 				//}
 			}
-			if (child->get_visits() <= 500) {
+			if (child->get_visits() <= 500 && child->get_visits() > 400) {
 				if ((winrate > (0.97 * best_winrate))) {
 					//best_winrate = winrate;
 					best = child.get();
@@ -432,7 +439,7 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 				//	best = child.get();
 				//}
 			}
-			if (child->get_visits() <= 600) {
+			if (child->get_visits() <= 600 && child->get_visits() > 500) {
 				if ((winrate > (0.975 * best_winrate))) {
 					//best_winrate = winrate;
 					best = child.get();
@@ -451,7 +458,7 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 				//	best = child.get();
 				//}
 			}
-			if (child->get_visits() <= 700) {
+			if (child->get_visits() <= 700 && child->get_visits() > 600) {
 				if ((winrate > (0.98 * best_winrate))) {
 					//best_winrate = winrate;
 					best = child.get();
@@ -470,7 +477,7 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 				//	best = child.get();
 				//}
 			}
-			if (child->get_visits() <= 800) {
+			if (child->get_visits() <= 800 && child->get_visits() > 700) {
 				if ((winrate > (0.98 * best_winrate))) {
 					//best_winrate = winrate;
 					best = child.get();
@@ -489,7 +496,7 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 				//	best = child.get();
 				//}
 			}
-			if (child->get_visits() <= 900) {
+			if (child->get_visits() <= 900 && child->get_visits() > 800) {
 				if ((winrate > (0.98 * best_winrate))) {
 					//best_winrate = winrate;
 					best = child.get();
@@ -508,7 +515,7 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 				//	best = child.get();
 				//}
 			}
-			if (child->get_visits() <= 1000) {
+			if (child->get_visits() <= 1000 && child->get_visits() > 900) {
 				if ((winrate > (0.98 * best_winrate))) {
 					//best_winrate = winrate;
 					best = child.get();
@@ -522,11 +529,14 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 					best = child.get();
 					return best;
 				}
+				
+
+
 				//if (value > best_value) {
 				//	best_value = value;
 				//	best = child.get();
 				//}
-			}
+			} */
 		}
 
 
