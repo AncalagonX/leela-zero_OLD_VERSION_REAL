@@ -159,6 +159,9 @@ SearchResult UCTSearch::play_simulation(GameState & currstate,
 			auto score = currstate.final_score();
 			result = SearchResult::from_score(score);
 		}
+		// TODO: IF "ROOT NODE" IS TRUE (code here) ----> node == m_root.get() <---- AND NOT "NODE->HAS CHILDREN" THEN GET AN EVAL.
+		// TODO: AND THEN REMOVE THE UCTNODE CODE THAT GETS 1 VISIT PER ROOT NODE, AND SEE IF IT STILL GETS 1 PER EACH!
+		// TODO: ALSO CHANGE TABLE OUTPUT TO 500 500 AGAIN.
 		else if (m_nodes < MAX_TREE_SIZE) {
 			float eval;
 			auto success = node->create_children(m_nodes, currstate, eval);
