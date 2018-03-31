@@ -78,8 +78,8 @@
  */
 //#define USE_TUNER
 
-#define PROGRAM_NAME "Leela Zero"
-#define PROGRAM_VERSION "0.12"
+#define PROGRAM_NAME "Leela Zero Min_Root_Node_Visits (200v til 1600p)"
+#define PROGRAM_VERSION "0.13"
 
 /*
  * OpenBLAS limitation: the default configuration on some Linuxes
