@@ -1006,7 +1006,7 @@ int UCTSearch::think(int color, passflag_t passflag) {
     // display search info
     myprintf("\n");
 
-    dump_stats(m_rootstate, *m_root, 10, 100, true);
+    dump_stats(m_rootstate, *m_root, 500, 500, true);
     Training::record(m_rootstate, *m_root);
 
     Time elapsed;
@@ -1073,7 +1073,7 @@ void UCTSearch::ponder() {
 	pondering_now = false;
     // display search info
     myprintf("\n");
-    dump_stats(m_rootstate, *m_root, 10, 100, true);
+    dump_stats(m_rootstate, *m_root, 500, 500, true);
 
     myprintf("\n%d visits, %d nodes\n\n", m_root->get_visits(), m_nodes.load());
 }
