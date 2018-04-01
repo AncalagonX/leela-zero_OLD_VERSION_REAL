@@ -154,6 +154,30 @@ SearchResult UCTSearch::play_simulation(GameState & currstate,
 
     node->virtual_loss();
 
+	if (node == m_root.get() && !node->has_children()) {
+		float eval;
+		auto success = node->create_children(m_nodes, currstate, eval);
+		if (success) {
+			result = SearchResult::from_eval(eval);
+		}
+	}
+
+	if (node == m_root.get() && node->get_visits() < 10 && node->get_visits() >= 1) {
+		auto next = node->uct_select_child(color, node == m_root.get(), movenum, pondering_now, static_cast<int>(m_playouts));
+
+		if (next != nullptr) {
+			auto move = next->get_move();
+
+			currstate.play_move(move);
+			if (move != FastBoard::PASS && currstate.superko()) {
+				next->invalidate();
+			}
+			else {
+				result = play_simulation(currstate, next);
+			}
+		}
+	}
+
 	if (!node->has_children()) {
 		if (currstate.get_passes() >= 2) {
 			auto score = currstate.final_score();

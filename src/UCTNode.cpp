@@ -315,6 +315,14 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 		//	return best;
 		//}
 
+
+
+
+
+		////////////////////////////////////////////
+		/* THE FOLLOW SECTION IS COMMENTED OUT FOR TESTING THE UCTSEARCH.CPP METHOD OF MIN ROOT VISITS
+
+
 		if (is_root) {
 			if (is_root && child->get_visits() < 1) {
 				best = child.get();
@@ -334,6 +342,8 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 		//		return best;
 		//	}
 		//}
+
+
 		int max_playouts_til_regular_value = 1600;
 		int mpt = max_playouts_til_regular_value;
 		if (is_root && playouts < max_playouts_til_regular_value && playouts > 500) {
@@ -536,12 +546,14 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 				//	best = child.get();
 				//}
 			} */
-		}
+		//}
+
+		//////////////////////////////////////////////////////////////////
+		// MUST UNCOMMENT THE BRACKET ABOVE THIS LONG ///// LINE! IT'S COMMENTED OUT FOR TESTING UCTSEARCH.CPP MIN ROOT VISITS
 
 
 
-
-
+		
 
 
 
@@ -584,10 +596,10 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 		//	return best;
 		//}
 
-		if (parentvisits <= 1) {
-			best = child.get();
-			return best;
-		}
+		//if (parentvisits <= 1) {
+		//	best = child.get();
+		//	return best;
+		//}
 
 
 		if (value > best_value) {
