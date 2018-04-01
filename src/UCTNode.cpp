@@ -315,12 +315,20 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 		//	return best;
 		//}
 
+		if (!is_root && playouts <= 362) {
+			continue;
+		}
+
+
+		/*
 		if (is_root) {
 			if (is_root && child->get_visits() < 1) {
 				best = child.get();
 				return best;
 			}
 		}
+		*/
+
 		//if (is_root && m_visits <= 3200 && m_visits > 400) {
 		//	if (is_root && child->get_visits() < 100 && parentvisits < 100) {
 		//		//if (winrate > best_winrate) {
@@ -334,8 +342,10 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 		//		return best;
 		//	}
 		//}
+
 		int max_playouts_til_regular_value = 1600;
 		int mpt = max_playouts_til_regular_value;
+
 		if (is_root && playouts < max_playouts_til_regular_value && playouts > 500) {
 			if (child->get_visits() <= (10)) {
 				if ((winrate > (0.95 * best_winrate))) {
