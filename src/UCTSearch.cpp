@@ -225,6 +225,10 @@ void UCTSearch::dump_stats(FastState & state, UCTNode & parent, int list_min, in
         return;
     }
 
+	if (list_min >= 4) {
+		myprintf("========================================================\n");
+		myprintf("==================== SEARCH RESULTS ====================\n");
+	}
     int movecount = 0;
 	int list_counter = 0;
     for (const auto& node : parent.get_children()) {
@@ -945,7 +949,10 @@ int UCTSearch::think(int color, passflag_t passflag) {
             //dump_analysis(static_cast<int>(m_playouts));
 			dump_stats(m_rootstate, *m_root, 2, 2, false);
 			if (cfg_puct != 0.8 || cfg_fpu_reduction != 0.25) {
-				myprintf("\ncfg_PUCT: %.2f -> cfg_FPU_reduction: %.2f\n", cfg_puct, cfg_fpu_reduction);
+				myprintf("\nThinking... cfg_PUCT: %.2f -> cfg_FPU_reduction: %.2f\n", cfg_puct, cfg_fpu_reduction);
+			}
+			else {
+				myprintf("Thinking...\n");
 			}
         }
         keeprunning  = is_running();
@@ -1003,7 +1010,7 @@ int UCTSearch::think(int color, passflag_t passflag) {
 
 void UCTSearch::ponder() {
 	update_root();
-	cfg_fpu_reduction = 0.05;
+	cfg_fpu_reduction = 0.25;
 	cfg_puct = 0.8;
 	Time start;
 	pondering_now = true;
@@ -1034,7 +1041,10 @@ void UCTSearch::ponder() {
 			//dump_analysis(static_cast<int>(m_playouts));
 			dump_stats(m_rootstate, *m_root, 2, 2, false);
 			if (cfg_puct != 0.8 || cfg_fpu_reduction != 0.25) {
-				myprintf("\ncfg_PUCT: %.2f -> cfg_FPU_reduction: %.2f\n", cfg_puct, cfg_fpu_reduction);
+				myprintf("\nThinking... cfg_PUCT: %.2f -> cfg_FPU_reduction: %.2f\n", cfg_puct, cfg_fpu_reduction);
+			}
+			else {
+				myprintf("\nThinking...");
 			}
 		}
 
