@@ -335,10 +335,10 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 		//	}
 		//}
 
-		int max_playouts_til_regular_value = 1600;
+		int max_playouts_til_regular_value = 1000;
 		int mpt = max_playouts_til_regular_value;
 
-		if (is_root && playouts < max_playouts_til_regular_value && playouts > 500) {
+		if (is_root && playouts < max_playouts_til_regular_value && playouts > 400) {
 			if (child->get_visits() <= (10)) {
 				if ((winrate > (0.95 * best_winrate))) {
 					//best_winrate = winrate;
@@ -359,7 +359,7 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 				//}
 			}
 			//if (max_playouts_til_regular_value >= 1100 && child->get_visits() <= (200) && child->get_visits() > (100)) {
-			if (playouts < max_playouts_til_regular_value && playouts >= 1000 && child->get_visits() <= (200)) {
+			if (playouts < max_playouts_til_regular_value && playouts >= 600 && child->get_visits() <= (100)) {
 				if ((winrate > (0.98 * best_winrate))) {
 					//best_winrate = winrate;
 					best = child.get();
@@ -653,11 +653,11 @@ public:
 
 
 
-		if (a->get_visits() >= 100 && a->get_visits() < 200 && b->get_visits() >= 100 && b->get_visits() < 200) {
+		if (a->get_visits() >= 50 && a->get_visits() < 100 && b->get_visits() >= 50 && b->get_visits() < 100) {
 			return a->get_eval(m_color) < b->get_eval(m_color);
 		}
 		
-		if (a->get_visits() >= 200 && b->get_visits() >= 200) {
+		if (a->get_visits() >= 100 && b->get_visits() >= 100) {
 			return a->get_eval(m_color) < b->get_eval(m_color);
 		}
 		//////////////////////////////////////
