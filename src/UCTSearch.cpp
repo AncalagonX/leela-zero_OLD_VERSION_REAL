@@ -241,7 +241,7 @@ void UCTSearch::dump_stats(FastState & state, UCTNode & parent, int list_min, in
         tmpstate.play_move(node->get_move());
         std::string pv = move + " " + get_pv(tmpstate, *node);
 		if (list_counter < list_max) {
-			if (node->get_visits() >= 10 || list_counter < list_min) {
+			if (node->get_visits() >= 20 || list_counter < list_min) {
 				myprintf("%4s -> %6d (V: %5.2f%%) (N: %5.2f%%) PV: %s\n",
 					move.c_str(),
 					node->get_visits(),
@@ -982,7 +982,7 @@ int UCTSearch::think(int color, passflag_t passflag) {
     // display search info
     myprintf("\n");
 
-    dump_stats(m_rootstate, *m_root, 500, 500, true);
+    dump_stats(m_rootstate, *m_root, 10, 50, true);
     Training::record(m_rootstate, *m_root);
 
     Time elapsed;
@@ -1049,7 +1049,7 @@ void UCTSearch::ponder() {
 	pondering_now = false;
     // display search info
     myprintf("\n");
-    dump_stats(m_rootstate, *m_root, 500, 500, true);
+    dump_stats(m_rootstate, *m_root, 10, 50, true);
 
     myprintf("\n%d visits, %d nodes\n\n", m_root->get_visits(), m_nodes.load());
 }
