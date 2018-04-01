@@ -340,43 +340,23 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 
 		if (is_root && playouts < max_playouts_til_regular_value && playouts > 400) {
 			if (child->get_visits() <= (10)) {
-				if ((winrate > (0.95 * best_winrate))) {
-					//best_winrate = winrate;
+				if (value > (0.95 * best_value)) {
 					best = child.get();
-					if (winrate > best_winrate) {
-						best_winrate = winrate;
+					if (value > best_value) {
+						best_value = value;
 					}
 					return best;
 				}
-				if (winrate > best_winrate) {
-					best_winrate = winrate;
-					best = child.get();
-					return best;
-				}
-				//if (value > best_value) {
-				//	best_value = value;
-				//	best = child.get();
-				//}
 			}
 			//if (max_playouts_til_regular_value >= 1100 && child->get_visits() <= (200) && child->get_visits() > (100)) {
 			if (playouts < max_playouts_til_regular_value && playouts >= 600 && child->get_visits() <= (100)) {
-				if ((winrate > (0.98 * best_winrate))) {
-					//best_winrate = winrate;
+				if (value >(0.98 * best_value)) {
 					best = child.get();
-					if (winrate > best_winrate) {
-						best_winrate = winrate;
+					if (value > best_value) {
+						best_value = value;
 					}
 					return best;
 				}
-				if (winrate > best_winrate) {
-					best_winrate = winrate;
-					best = child.get();
-					return best;
-				}
-				//if (value > best_value) {
-				//	best_value = value;
-				//	best = child.get();
-				//}
 			}
 
 
