@@ -362,8 +362,8 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 				}
 				else
 				if ((playouts >= 800)
-				&&  (playouts < mptrv)
-				&&  (child->get_visits() < 200)) {
+				&&  (playouts < (0.75 * mptrv))
+				&&  (child->get_visits() < 100)) {
 					if (winrate >= (0.95 * best_winrate)) {
 						best = child.get();
 						if (winrate > best_winrate) {
@@ -375,8 +375,8 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 			}
 			// Consider adding "&& playouts >= mptrv" condition if this still doesn't work
 			else
-			if ((playouts >= mptrv)
-			&&  (playouts < (1.5 * mptrv))) {
+			if ((playouts >= (0.75 * mptrv))
+			&&  (playouts < (1.0 * mptrv))) {
 				if (child->get_visits() <= 200) {
 					if (winrate >= (0.98 * best_winrate)) {
 						best = child.get();
