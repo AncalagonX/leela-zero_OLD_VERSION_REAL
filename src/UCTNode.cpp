@@ -332,6 +332,7 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 
 		const int max_playouts_til_regular_value = 1600;
 		const int mptrv = max_playouts_til_regular_value;
+		const int mptrv_div4 = (mptrv / 4);
 		//const int mptrv_this_turn = (max_playouts_til_regular_value + parentvisits);
 		const int real_playouts_this_turn = (playouts - m_visits);
 
@@ -350,7 +351,7 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 			else
 			if (playouts < mptrv) {
 				if ((playouts >= 400)
-				&&  (playouts < 800)
+				&&  (playouts < (2 * mptrv_div4))
 				&&  (child->get_visits() <= 50)) {
 					if (winrate >= (0.95 * best_winrate)) {
 						best = child.get();
@@ -361,8 +362,8 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 					}
 				}
 				else
-				if ((playouts >= 800)
-				&&  (playouts < (0.75 * mptrv))
+				if ((playouts >= (2 * mptrv_div4))
+				&&  (playouts <  (3 * mptrv_div4))
 				&&  (child->get_visits() < 100)) {
 					if (winrate >= (0.95 * best_winrate)) {
 						best = child.get();
@@ -372,53 +373,55 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 						return best;
 					}
 				}
-			}
+
 			// Consider adding "&& playouts >= mptrv" condition if this still doesn't work
-			else
-			if ((playouts >= (0.75 * mptrv))
-			&&  (playouts < (1.0 * mptrv))) {
-				if (child->get_visits() <= 200) {
-					if (winrate >= (0.98 * best_winrate)) {
-						best = child.get();
-						if (winrate > best_winrate) {
-							best_winrate = winrate;
-						}
-						return best;
-					}
-				}
 				else
-				if (child->get_visits() <= 500) {
-					if (winrate >= (0.99 * best_winrate)) {
-						best = child.get();
-						if (winrate > best_winrate) {
-							best_winrate = winrate;
+				if ((playouts >= (3 * mptrv_div4))
+				&&  (playouts <  (mptrv))) {
+					if (child->get_visits() <= 200) {
+						if (winrate >= (0.98 * best_winrate)) {
+							best = child.get();
+							if (winrate > best_winrate) {
+								best_winrate = winrate;
+							}
+							return best;
 						}
-						return best;
 					}
 					//else
-					//if (value > (0.95 * best_value)) {
-					//	best = child.get();
-					//	if (value > best_value) {
-					//		best_value = value;
+					//if (child->get_visits() <= 500) {
+					//	if (winrate >= (0.99 * best_winrate)) {
+					//		best = child.get();
+					//		if (winrate > best_winrate) {
+					//			best_winrate = winrate;
+					//		}
+					//		return best;
 					//	}
-					//	return best;
+						//else
+						//if (value > (0.95 * best_value)) {
+						//	best = child.get();
+						//	if (value > best_value) {
+						//		best_value = value;
+						//	}
+						//	return best;
+						//}
+					//}
+					//else
+					//if (child->get_visits() > 500) {
+					//	if (value > (0.98 * best_value)) {
+					//		best = child.get();
+					//		if (value > best_value) {
+					//			best_value = value;
+					//		}
+					//		return best;
+					//	}
 					//}
 				}
-				//else
-				//if (child->get_visits() > 500) {
-				//	if (value > (0.98 * best_value)) {
-				//		best = child.get();
-				//		if (value > best_value) {
-				//			best_value = value;
-				//		}
-				//		return best;
-				//	}
-				//}
 			}
 			else
-			if (playouts >= (1.5 * mptrv)) {
-				if ((child->get_visits() > 500)
-				&&  (winrate >= (0.99 * best_winrate))) {
+			if ((playouts >= (mptrv)) 
+			&&  (playouts <  (6 * mptrv_div4))) {
+				if ((child->get_visits() > 200)
+				&&  (winrate >= (0.98 * best_winrate))) {
 					best = child.get();
 					if (winrate > best_winrate) {
 						best_winrate = winrate;
@@ -449,6 +452,12 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 		}
 		else
 		if (!is_root) {
+			if (value > best_value) {
+				best_value = value;
+				best = child.get();
+			}
+		}
+		else {
 			if (value > best_value) {
 				best_value = value;
 				best = child.get();
