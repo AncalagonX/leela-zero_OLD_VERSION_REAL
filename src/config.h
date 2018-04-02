@@ -78,7 +78,7 @@
  */
 //#define USE_TUNER
 
-#define PROGRAM_NAME "Leela Zero MRNV (10v til 600p, 100v til 1000p)"
+#define PROGRAM_NAME "Leela Zero MRNV (10v til 600p, 200v til 1000p) - VALUE"
 #define PROGRAM_VERSION "0.13"
 
 /*
