@@ -212,9 +212,9 @@ void UCTNode::accumulate_eval(float eval) {
 
 UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool pondering_now, int playouts) {
 	UCTNode* best = nullptr;
-	auto best_value = std::numeric_limits<float>::lowest();
-	auto best_winrate = std::numeric_limits<float>::lowest();
-	auto best_puct = std::numeric_limits<float>::lowest();
+	auto best_value = std::numeric_limits<double>::lowest();
+	auto best_winrate = std::numeric_limits<double>::lowest();
+	auto best_puct = std::numeric_limits<double>::lowest();
 
 	LOCK(get_mutex(), lock);
 
@@ -230,7 +230,7 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 		}
 	}
 
-	auto numerator = std::sqrt((float)parentvisits);
+	auto numerator = std::sqrt((double)parentvisits);
 	auto fpu_reduction = 0.0f;
 	// Lower the expected eval for moves that are likely not the best.
 	// Do not do this if we have introduced noise at this node exactly
@@ -247,7 +247,7 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 			continue;
 		}
 
-		float winrate = fpu_eval;
+		double winrate = fpu_eval;
 
 		if (child->get_visits() > 0) {
 			winrate = child->get_eval(color);
@@ -278,9 +278,9 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 
 
 
-		assert(value > std::numeric_limits<float>::lowest());
-		assert(winrate > std::numeric_limits<float>::lowest());
-		assert(puct > std::numeric_limits<float>::lowest());
+		assert(value > std::numeric_limits<double>::lowest());
+		assert(winrate > std::numeric_limits<double>::lowest());
+		assert(puct > std::numeric_limits<double>::lowest());
 		//if (value >= (0.9 * best_value) && puct <= best_puct && movenum < -1) {
 		//	if (value > best_value) {
 		//		best_value = value;
@@ -347,11 +347,9 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 		//playout limit      = 1600 playouts left to perform
 		//REAL playout limit = 2600 "playouts" = stop thinking when playouts equals this number
 
-		auto winrate_ratio = (winrate/best_winrate);
-
 
 		if (is_root) {
-			if (child->get_visits() < 1) {
+			if (child->get_visits() == 0) {
 				best = child.get();
 				return best;
 			}
@@ -359,10 +357,13 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 			if ((playouts >= 400)
 			&&  (playouts < mptrv_2)
 			&&  (child->get_visits() < 50)) {
-				if (winrate_ratio >= 0.95) {
+				if (winrate >= (0.95 * best_winrate)) { // WINRATE
 					best = child.get();
 					if (winrate > best_winrate) {
 						best_winrate = winrate;
+					}
+					if (value > best_value) {
+						best_value = value;
 					}
 					return best;
 				}
@@ -371,10 +372,13 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 			if ((playouts >= mptrv_2)
 			&&  (playouts <  mptrv_3)
 			&&  (child->get_visits() < 100)) {
-				if (winrate_ratio >= 0.95) {
+				if (winrate >= (0.95 * best_winrate)) { // WINRATE
 					best = child.get();
 					if (winrate > best_winrate) {
 						best_winrate = winrate;
+					}
+					if (value > best_value) {
+						best_value = value;
 					}
 					return best;
 				}
@@ -382,16 +386,19 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 			// Consider adding "&& playouts >= mptrv" condition if this still doesn't work
 			else
 			if ((playouts >= mptrv_3)
-			&&  (playouts <  mptrv)) {
-				if (child->get_visits() < 200) {
-					if (winrate_ratio >= 0.98) {
-						best = child.get();
-						if (winrate > best_winrate) {
-							best_winrate = winrate;
-						}
-						return best;
+			&&  (playouts <  mptrv)
+			&&  (child->get_visits() < 200)) {
+				if (winrate >= (0.98 * best_winrate)) { // WINRATE
+					best = child.get();
+					if (winrate > best_winrate) {
+						best_winrate = winrate;
 					}
+					if (value > best_value) {
+						best_value = value;
+					}
+					return best;
 				}
+			}
 				//else
 				//if (child->get_visits() <= 500) {
 				//	if (winrate >= (0.99 * best_winrate)) {
@@ -420,15 +427,17 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 				//		return best;
 				//	}
 				//}
-			}
 			else
 			if ((playouts >= mptrv) 
-			&&  (playouts <  mptrv_6)) {
-				if ((child->get_visits() > 200)
-				&&  (winrate_ratio >= 0.98)) {
+			&&  (playouts <  mptrv_6)
+			&&  (child->get_visits() <= 500)) {
+				if (value >= (0.98 * best_value)) { // VALUE
 					best = child.get();
 					if (winrate > best_winrate) {
 						best_winrate = winrate;
+					}
+					if (value > best_value) {
+						best_value = value;
 					}
 					return best;
 				}
