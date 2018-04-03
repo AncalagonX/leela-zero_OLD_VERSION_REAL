@@ -545,7 +545,7 @@ public:
 			}
 
 			if (a->get_visits() >= 500 && b->get_visits() >= 500) {
-				return a->get_eval(m_color) < b->get_eval(m_color);
+				return a->get_eval(m_color) > b->get_eval(m_color); ///////////// REVERSED IF ABOVE 90% EVAL!
 			}
 		}
 
@@ -564,7 +564,7 @@ public:
 			}
 
 			if (a->get_visits() >= 500 && b->get_visits() >= 500) {
-				return a->get_eval(m_color) > b->get_eval(m_color); ///////////// REVERSED IF ABOVE 75% BUT NOT IF ABOVE 90%!
+				return a->get_eval(m_color) < b->get_eval(m_color);
 			}
 		}
 
