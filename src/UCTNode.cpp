@@ -357,7 +357,7 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 				return best;
 			}
 			else
-			if ((playouts >= 400)
+			if ((playouts >= 800)
 			&&  (playouts < mptrv_2)
 			&&  (child->get_visits() < 50)) {
 				if (winrate >= 0.15 && winrate <= 0.85) { // WINRATE 50% GATE
