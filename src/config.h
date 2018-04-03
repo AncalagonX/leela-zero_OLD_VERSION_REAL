@@ -78,8 +78,8 @@
  */
 //#define USE_TUNER
 
-#define PROGRAM_NAME "Leela Zero MRNV (10v til 600p, 200v til 1000p) - VALUE"
-#define PROGRAM_VERSION "0.13"
+#define PROGRAM_NAME "Leela Zero - This bot automatically plays exactly at your rank"
+#define PROGRAM_VERSION "v3.14159"
 
 /*
  * OpenBLAS limitation: the default configuration on some Linuxes

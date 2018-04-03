@@ -530,7 +530,7 @@ public:
 			}
 		}
 
-		if (a->get_eval(m_color) >= 0.75 && a->get_eval(m_color) < 2.00 && b->get_eval(m_color) >= 0.75 && b->get_eval(m_color) < 2.00) {
+		if (a->get_eval(m_color) >= 0.90 && a->get_eval(m_color) < 2.00 && b->get_eval(m_color) >= 0.90 && b->get_eval(m_color) < 2.00) {
 			if (a->get_visits() >= 100 && a->get_visits() < 200 && b->get_visits() >= 100 && b->get_visits() < 200) {
 				return a->get_eval(m_color) < b->get_eval(m_color);
 			}
@@ -546,6 +546,25 @@ public:
 
 			if (a->get_visits() >= 500 && b->get_visits() >= 500) {
 				return a->get_eval(m_color) < b->get_eval(m_color);
+			}
+		}
+
+		if (a->get_eval(m_color) >= 0.75 && a->get_eval(m_color) < 0.90 && b->get_eval(m_color) >= 0.75 && b->get_eval(m_color) < 0.90) {
+			if (a->get_visits() >= 100 && a->get_visits() < 200 && b->get_visits() >= 100 && b->get_visits() < 200) {
+				return a->get_eval(m_color) < b->get_eval(m_color);
+			}
+			if (a->get_visits() >= 200 && a->get_visits() < 300 && b->get_visits() >= 200 && b->get_visits() < 300) {
+				return a->get_eval(m_color) < b->get_eval(m_color);
+			}
+			if (a->get_visits() >= 300 && a->get_visits() < 400 && b->get_visits() >= 300 && b->get_visits() < 400) {
+				return a->get_eval(m_color) < b->get_eval(m_color);
+			}
+			if (a->get_visits() >= 400 && a->get_visits() < 500 && b->get_visits() >= 400 && b->get_visits() < 500) {
+				return a->get_eval(m_color) < b->get_eval(m_color);
+			}
+
+			if (a->get_visits() >= 500 && b->get_visits() >= 500) {
+				return a->get_eval(m_color) > b->get_eval(m_color); ///////////// REVERSED IF ABOVE 75% BUT NOT IF ABOVE 90%!
 			}
 		}
 
