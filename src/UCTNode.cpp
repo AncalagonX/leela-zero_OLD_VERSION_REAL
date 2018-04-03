@@ -367,8 +367,16 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 					if (value > best_value) {
 						best_value = value;
 					}
-					return best;
 				}
+				else
+				if (value > best_value) {
+					best_value = value;
+					best = child.get();
+				}
+				else {
+					best = child.get();
+				}
+				return best;
 			}
 			else
 			if ((playouts >= mptrv_2)
@@ -382,14 +390,22 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 					if (value > best_value) {
 						best_value = value;
 					}
-					return best;
 				}
+				else 
+				if (value > best_value) {
+					best_value = value;
+					best = child.get();
+				}
+				else {
+					best = child.get();
+				}
+				return best;
 			}
 			else
 			if ((playouts >= mptrv_3)
 			&&  (playouts <  mptrv_6)
 			&&  (child->get_visits() <= 500)) {
-				if (winrate >= 0.45 && winrate <= 0.60) { // WINRATE 50% GATE
+				if (winrate >= 0.45 && winrate <= 0.55) { // WINRATE 50% GATE
 					best = child.get();
 					if (winrate > best_winrate) {
 						best_winrate = winrate;
@@ -397,8 +413,16 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 					if (value > best_value) {
 						best_value = value;
 					}
-					return best;
 				}
+				else 
+				if (value > best_value) {
+					best_value = value;
+					best = child.get();
+				}
+				else {
+					best = child.get();
+				}
+				return best;
 			}
 			else
 			if (winrate >= 0.45 && winrate <= 0.55) { // WINRATE TIGHTER 50% GATE
@@ -416,6 +440,9 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 				best_value = value;
 				best = child.get();
 			}
+			else {
+				best = child.get();
+			}
 		}
 		else
 		if (!is_root) {
@@ -423,10 +450,16 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 				best_value = value;
 				best = child.get();
 			}
+			else {
+				best = child.get();
+			}
 		}
 		else {
 			if (value > best_value) {
 				best_value = value;
+				best = child.get();
+			}
+			else {
 				best = child.get();
 			}
 		}
