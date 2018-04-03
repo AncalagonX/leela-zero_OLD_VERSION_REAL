@@ -455,7 +455,7 @@ public:
 
 
 
-		if (a->get_eval(m_color) >= 0.00 && a->get_eval(m_color) < 0.25 && a->get_eval(m_color) >= 0.00 && a->get_eval(m_color) < 0.25) {
+		if (a->get_eval(m_color) >= 0.00 && a->get_eval(m_color) < 0.25 && b->get_eval(m_color) >= 0.00 && b->get_eval(m_color) < 0.25) {
 			if (a->get_visits() >= 100 && a->get_visits() < 200 && b->get_visits() >= 100 && b->get_visits() < 200) {
 				return a->get_eval(m_color) < b->get_eval(m_color);
 			}
@@ -474,7 +474,7 @@ public:
 			}
 		}
 
-		if (a->get_eval(m_color) >= 0.25 && a->get_eval(m_color) < 0.35 && a->get_eval(m_color) >= 0.25 && a->get_eval(m_color) < 0.35) {
+		if (a->get_eval(m_color) >= 0.25 && a->get_eval(m_color) < 0.35 && b->get_eval(m_color) >= 0.25 && b->get_eval(m_color) < 0.35) {
 			if (a->get_visits() >= 100 && a->get_visits() < 200 && b->get_visits() >= 100 && b->get_visits() < 200) {
 				return a->get_eval(m_color) < b->get_eval(m_color);
 			}
@@ -493,7 +493,7 @@ public:
 			}
 		}
 
-		if (a->get_eval(m_color) >= 0.35 && a->get_eval(m_color) < 0.45 && a->get_eval(m_color) >= 0.35 && a->get_eval(m_color) < 0.45) {
+		if (a->get_eval(m_color) >= 0.35 && a->get_eval(m_color) < 0.45 && b->get_eval(m_color) >= 0.35 && b->get_eval(m_color) < 0.45) {
 			if (a->get_visits() >= 100 && a->get_visits() < 200 && b->get_visits() >= 100 && b->get_visits() < 200) {
 				return a->get_eval(m_color) < b->get_eval(m_color);
 			}
@@ -512,7 +512,7 @@ public:
 			}
 		}
 
-		if (a->get_eval(m_color) >= 0.75 && a->get_eval(m_color) < 2.00 && a->get_eval(m_color) >= 0.75 && a->get_eval(m_color) < 2.00) {
+		if (a->get_eval(m_color) >= 0.75 && a->get_eval(m_color) < 2.00 && b->get_eval(m_color) >= 0.75 && b->get_eval(m_color) < 2.00) {
 			if (a->get_visits() >= 100 && a->get_visits() < 200 && b->get_visits() >= 100 && b->get_visits() < 200) {
 				return a->get_eval(m_color) < b->get_eval(m_color);
 			}
@@ -531,7 +531,7 @@ public:
 			}
 		}
 
-		if (a->get_eval(m_color) >= 0.65 && a->get_eval(m_color) < 0.75 && a->get_eval(m_color) >= 0.65 && a->get_eval(m_color) < 0.75) {
+		if (a->get_eval(m_color) >= 0.65 && a->get_eval(m_color) < 0.75 && b->get_eval(m_color) >= 0.65 && b->get_eval(m_color) < 0.75) {
 			if (a->get_visits() >= 100 && a->get_visits() < 200 && b->get_visits() >= 100 && b->get_visits() < 200) {
 				return a->get_eval(m_color) < b->get_eval(m_color);
 			}
@@ -550,7 +550,7 @@ public:
 			}
 		}
 
-		if (a->get_eval(m_color) >= 0.55 && a->get_eval(m_color) < 0.65 && a->get_eval(m_color) >= 0.55 && a->get_eval(m_color) < 0.65) {
+		if (a->get_eval(m_color) >= 0.55 && a->get_eval(m_color) < 0.65 && b->get_eval(m_color) >= 0.55 && b->get_eval(m_color) < 0.65) {
 			if (a->get_visits() >= 100 && a->get_visits() < 200 && b->get_visits() >= 100 && b->get_visits() < 200) {
 				return a->get_eval(m_color) < b->get_eval(m_color);
 			}
@@ -569,7 +569,7 @@ public:
 			}
 		}
 
-		if (a->get_eval(m_color) >= 0.45 && a->get_eval(m_color) < 0.55 && a->get_eval(m_color) >= 0.45 && a->get_eval(m_color) < 0.55) {
+		if (a->get_eval(m_color) >= 0.45 && a->get_eval(m_color) < 0.55 && b->get_eval(m_color) >= 0.45 && b->get_eval(m_color) < 0.55) {
 			if (a->get_visits() >= 100 && a->get_visits() < 200 && b->get_visits() >= 100 && b->get_visits() < 200) {
 				return a->get_eval(m_color) < b->get_eval(m_color);
 			}
