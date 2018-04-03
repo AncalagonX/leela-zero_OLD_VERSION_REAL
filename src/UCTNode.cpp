@@ -332,18 +332,19 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 		//	}
 		//}
 
-		//const int max_playouts_til_regular_value = 1600;
-		const int max_playouts_til_regular_value = 6400;
+		const int max_playouts_til_regular_value = 3200;
 		const int mptrv = max_playouts_til_regular_value;
 		const int mptrv_1 = ((1 * mptrv) / 4);
 		const int mptrv_2 = ((2 * mptrv) / 4);
 		const int mptrv_3 = ((3 * mptrv) / 4);
 		const int mptrv_5 = ((5 * mptrv) / 4);
 		const int mptrv_6 = ((6 * mptrv) / 4);
+		const int mptrv_7 = ((7 * mptrv) / 4);
+		const int mptrv_8 = ((8 * mptrv) / 4);
 
-		//const int mptrv_div4 = (mptrv / 4);
+		const int mptrv_div4 = (mptrv / 4);
 		//const int mptrv_this_turn = (max_playouts_til_regular_value + parentvisits);
-		//const int real_playouts_this_turn = (playouts - m_visits);
+		const int real_playouts_this_turn = (playouts - m_visits);
 
 		//mptrv				 = 1000
 		//parentvisits       = 1000 valid visits at start
@@ -357,10 +358,10 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 				return best;
 			}
 			else
-			if ((playouts >= 800)
+			if ((playouts >= 400)
 			&&  (playouts < mptrv_2)
 			&&  (child->get_visits() < 50)) {
-				if (winrate >= 0.15 && winrate <= 0.85) { // WINRATE 50% GATE
+				if (winrate >= 0.45 && winrate <= 0.60) { // WINRATE 50% GATE
 					best = child.get();
 					if (winrate > best_winrate) {
 						best_winrate = winrate;
@@ -402,7 +403,7 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 			if ((playouts >= mptrv_3)
 			&&  (playouts <  mptrv_6)
 			&&  (child->get_visits() <= 500)) {
-				if (winrate >= 0.45 && winrate <= 0.60) { // WINRATE 50% GATE
+				if (winrate >= 0.40 && winrate <= 0.60) { // WINRATE 50% GATE
 					best = child.get();
 					if (winrate > best_winrate) {
 						best_winrate = winrate;
@@ -419,8 +420,9 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 					return best;
 				}
 			}
-			else
-			if (winrate >= 0.45 && winrate <= 0.55) { // WINRATE TIGHTER 50% GATE
+			//else
+			if ((playouts >= mptrv_6)
+			&&  (winrate >= 0.45 && winrate <= 0.55)) { // WINRATE TIGHTER 50% GATE
 				best = child.get();
 				if (winrate > best_winrate) {
 					best_winrate = winrate;
@@ -622,7 +624,18 @@ public:
 			}
 
 			if (a->get_visits() >= 500 && b->get_visits() >= 500) {
-				return a->get_eval(m_color) < b->get_eval(m_color);
+				if (a->get_eval(m_color) >= 0.50 && a->get_eval(m_color) < 0.65 && b->get_eval(m_color) >= 0.65) { // SAFETY CATCH TO PREVENT HIGH WINRATES FROM SNEAKING THROUGH
+					return a->get_eval(m_color) > b->get_eval(m_color);
+				}
+				else if (b->get_eval(m_color) >= 0.50 && b->get_eval(m_color) < 0.65 && a->get_eval(m_color) >= 0.65) { // SAFETY CATCH (REVERSED A and B) TO PREVENT HIGH WINRATES FROM SNEAKING THROUGH
+					return a->get_eval(m_color) > b->get_eval(m_color);
+				}
+				else if (a->get_eval(m_color) >= 0.65 && b->get_eval(m_color) >= 0.65) { // SAFETY CATCH TO PREVENT HIGH WINRATES FROM SNEAKING THROUGH
+					return a->get_eval(m_color) > b->get_eval(m_color);
+				}
+				else {
+					return a->get_eval(m_color) < b->get_eval(m_color);
+				}
 			}
 		}
 
