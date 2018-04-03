@@ -369,6 +369,12 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 					}
 					return best;
 				}
+				else
+				if (value > best_value) {
+					best_value = value;
+					best = child.get();
+					return best;
+				}
 			}
 			else
 			if ((playouts >= mptrv_2)
@@ -384,6 +390,12 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 					}
 					return best;
 				}
+				else
+				if (value > best_value) {
+					best_value = value;
+					best = child.get();
+					return best;
+				}
 			}
 			else
 			if ((playouts >= mptrv_3)
@@ -397,6 +409,12 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 					if (value > best_value) {
 						best_value = value;
 					}
+					return best;
+				}
+				else
+				if (value > best_value) {
+					best_value = value;
+					best = child.get();
 					return best;
 				}
 			}
