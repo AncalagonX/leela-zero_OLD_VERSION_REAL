@@ -255,226 +255,16 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int movenum, bool po
 		auto psa = child->get_score();
 		auto denom = 1.0f + child->get_visits();
 		auto puct = cfg_puct * psa * (numerator / denom);
-		//if (puct <= 0.000001) {
-		//	puct = 0.000001;
-		//}
-		//if (puct >= 0.01) {
-		//	puct = 0.01;
-		//}
-		//if (best_puct <= 0.000001) {
-		//	best_puct = 0.000001;
-		//}
-
 		auto value = winrate + puct;
-
-
-		//if (movenum < 20) {
-		//	int flip_coin = rand() % 80;
-		//	if ((movenum / (1 + flip_coin)) <= 1) {
-		//		value = (winrate - (puct)) + (2 * puct * (movenum / 19));
-		//	}
-		//}
-
-
-
 
 		assert(value > std::numeric_limits<double>::lowest());
 		assert(winrate > std::numeric_limits<double>::lowest());
 		assert(puct > std::numeric_limits<double>::lowest());
-		//if (value >= (0.9 * best_value) && puct <= best_puct && movenum < -1) {
-		//	if (value > best_value) {
-		//		best_value = value;
-		//		best_puct = puct;
-		//		best_winrate = winrate;
-		//	}
-		//	best = child.get();
-		//	assert(best != nullptr);
-		//	return best;
-		//}
-		//else if (winrate >= (0.9 * winrate) && movenum < -1) {
-		//	best_value = value;
-		//	best_winrate = winrate;
-		//	best_puct = puct;
-		//	best = child.get();
-		//	assert(best != nullptr);
-		//	return best;
-		//}
-
-		//assert(value > -1000.0); // replaced with next line:
-
-		//if (child->get_visits() == 0) {	// Get at least more than 0 visits
-		//	//best_value = value;
-		//	best = child.get();
-		//	assert(best != nullptr);
-		//	return best;
-		//}
-		//if (child->get_visits() >= 10 && child->get_visits() < 100) {	// Else if more than 10 visits, have at least 100 visits
-		//	//best_value = value;
-		//	best = child.get();
-		//	assert(best != nullptr);
-		//	return best;
-		//}
-
-
-		//if (is_root && m_visits <= 3200 && m_visits > 400) {
-		//	if (is_root && child->get_visits() < 100 && parentvisits < 100) {
-		//		//if (winrate > best_winrate) {
-		//		//	best_winrate = winrate;
-		//		//	best = child.get();
-		//		//}
-		//		if (value > best_value) {
-		//			best_value = value;
-		//			best = child.get();
-		//		}
-		//		return best;
-		//	}
-		//}
-
-		const int max_playouts_til_regular_value = 1600;
-		const int mptrv = max_playouts_til_regular_value;
-		const int mptrv_1 = ((1 * mptrv) / 4);
-		const int mptrv_2 = ((2 * mptrv) / 4);
-		const int mptrv_3 = ((3 * mptrv) / 4);
-		const int mptrv_5 = ((5 * mptrv) / 4);
-		const int mptrv_6 = ((6 * mptrv) / 4);
-
-		const int mptrv_div4 = (mptrv / 4);
-		//const int mptrv_this_turn = (max_playouts_til_regular_value + parentvisits);
-		const int real_playouts_this_turn = (playouts - m_visits);
-
-		//mptrv				 = 1000
-		//parentvisits       = 1000 valid visits at start
-		//playout limit      = 1600 playouts left to perform
-		//REAL playout limit = 2600 "playouts" = stop thinking when playouts equals this number
-
-
-		if (is_root) {
-			if (child->get_visits() == 0) {
-				best = child.get();
-				return best;
-			}
-			else
-			if ((playouts >= 400)
-			&&  (playouts < mptrv_2)
-			&&  (child->get_visits() < 50)) {
-				if (winrate >= (0.95 * best_winrate)) { // WINRATE
-					best = child.get();
-					if (winrate > best_winrate) {
-						best_winrate = winrate;
-					}
-					if (value > best_value) {
-						best_value = value;
-					}
-					return best;
-				}
-			}
-			else
-			if ((playouts >= mptrv_2)
-			&&  (playouts <  mptrv_3)
-			&&  (child->get_visits() < 100)) {
-				if (winrate >= (0.95 * best_winrate)) { // WINRATE
-					best = child.get();
-					if (winrate > best_winrate) {
-						best_winrate = winrate;
-					}
-					if (value > best_value) {
-						best_value = value;
-					}
-					return best;
-				}
-			}
-			// Consider adding "&& playouts >= mptrv" condition if this still doesn't work
-			else
-			if ((mptrv > (2 * mptrv)) ////////////////////// DEACTIVATES THIS STATEMENT
-			&&  (playouts >= mptrv_3) ////////////////////// DOUBLE CHECK mptrv_3 WITH THE STATEMENT BELOW'S CONDITIONS!!!!!
-			&&  (playouts <  mptrv)
-			&&  (child->get_visits() < 200)) {
-				if (winrate >= (0.98 * best_winrate)) { // WINRATE
-					best = child.get();
-					if (winrate > best_winrate) {
-						best_winrate = winrate;
-					}
-					if (value > best_value) {
-						best_value = value;
-					}
-					return best;
-				}
-			}
-				//else
-				//if (child->get_visits() <= 500) {
-				//	if (winrate >= (0.99 * best_winrate)) {
-				//		best = child.get();
-				//		if (winrate > best_winrate) {
-				//			best_winrate = winrate;
-				//		}
-				//		return best;
-				//	}
-					//else
-					//if (value > (0.95 * best_value)) {
-					//	best = child.get();
-					//	if (value > best_value) {
-					//		best_value = value;
-					//	}
-					//	return best;
-					//}
-				//}
-				//else
-				//if (child->get_visits() > 500) {
-				//	if (value > (0.98 * best_value)) {
-				//		best = child.get();
-				//		if (value > best_value) {
-				//			best_value = value;
-				//		}
-				//		return best;
-				//	}
-				//}
-			else
-			if ((playouts >= mptrv_3) ///////////////////// USURPED FROM ABOVE DEACTIVATED STATEMENT!
-			&&  (playouts <  mptrv_6)
-			&&  (child->get_visits() <= 500)) {
-				if (value >= (0.95 * best_value)) { // VALUE
-					best = child.get();
-					if (winrate > best_winrate) {
-						best_winrate = winrate;
-					}
-					if (value > best_value) {
-						best_value = value;
-					}
-					return best;
-				}
-			}
-		//else
-		//if (playouts >= (1.5 * mptrv)) {
-		//	if ((child->get_visits() > 500)
-		//	&&  (winrate >= (0.99 * best_winrate))) {
-		//		if (winrate > best_winrate) {
-		//			best_winrate = winrate;
-		//		}
-		//		if (value > best_value) {
-		//			best_value = value;
-		//			best = child.get();
-		//		}
-		//		return best;
-		//	}
-		//}
-			else 
-			if (value > best_value) {
-				best_value = value;
-				best = child.get();
-			}
-		}
-		else
-		if (!is_root) {
-			if (value > best_value) {
-				best_value = value;
-				best = child.get();
-			}
-		}
-		else {
-			if (value > best_value) {
-				best_value = value;
-				best = child.get();
-			}
+		
+		
+		if (value > best_value) {
+			best_value = value;
+			best = child.get();
 		}
 	}
     assert(best != nullptr);
@@ -488,19 +278,7 @@ public:
     bool operator()(const UCTNode::node_ptr_t& a,
                     const UCTNode::node_ptr_t& b) {
 
-		////////////Next Line:  FORCE RETURN PRIOR SCORE ONLY
-		/////New next line:  If visits are greater than 100, then sort on SCORE
-		// EVEN NEWER LINE: First sort by pure visits. Then sort by score IF visits are more than 100.
-
-		
-		
-		
-		// Below code is good, I think. It sorts everything greater than 1000 visits by eval result	
-
-
-
-
-
+		// Sort by visits first and then eval, typically if >= 500 visits then compare by get_eval to get winner
 
 		if (a->get_visits() >= 100 && a->get_visits() < 200 && b->get_visits() >= 100 && b->get_visits() < 200) {
 			return a->get_eval(m_color) < b->get_eval(m_color);
@@ -519,40 +297,10 @@ public:
 			return a->get_eval(m_color) < b->get_eval(m_color);
 		}
 		//////////////////////////////////////
-		/*		
-		if (a->get_visits() >= 200 && a->get_visits() < 300 && b->get_visits() >= 200 && b->get_visits() < 300) {
-			return a->get_eval(m_color) < b->get_eval(m_color);
-		}
 
 
-		if (a->get_visits() >= 300 && a->get_visits() < 400 && b->get_visits() >= 300 && b->get_visits() < 400) {
-			return a->get_eval(m_color) < b->get_eval(m_color);
-		}
-		if (a->get_visits() >= 400 && a->get_visits() < 500 && b->get_visits() >= 400 && b->get_visits() < 500) {
-			return a->get_eval(m_color) < b->get_eval(m_color);
-		}
-		if (a->get_visits() >= 500 && a->get_visits() < 600 && b->get_visits() >= 500 && b->get_visits() < 600) {
-			return a->get_eval(m_color) < b->get_eval(m_color);
-		}
-		if (a->get_visits() >= 600 && a->get_visits() < 700 && b->get_visits() >= 600 && b->get_visits() < 700) {
-			return a->get_eval(m_color) < b->get_eval(m_color);
-		}
-		if (a->get_visits() >= 700 && a->get_visits() < 800 && b->get_visits() >= 700 && b->get_visits() < 800) {
-			return a->get_eval(m_color) < b->get_eval(m_color);
-		}
-		if (a->get_visits() >= 800 && a->get_visits() < 900 && b->get_visits() >= 800 && b->get_visits() < 900) {
-			return a->get_eval(m_color) < b->get_eval(m_color);
-		}
-		if (a->get_visits() >= 900 && a->get_visits() < 1000 && b->get_visits() >= 900 && b->get_visits() < 1000) {
-			return a->get_eval(m_color) < b->get_eval(m_color);
-		}
-		if (a->get_visits() >= 1000 && b->get_visits() >= 1000) {
-			return a->get_eval(m_color) < b->get_eval(m_color);
-		}
 
-		*/
 
-		// test test2 test3 test4 test5
         // if visits are not same, sort on visits
         if (a->get_visits() != b->get_visits()) {
             return a->get_visits() < b->get_visits();
