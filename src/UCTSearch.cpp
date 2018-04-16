@@ -530,7 +530,7 @@ int UCTSearch::est_playouts_left(int elapsed_centis, int time_for_move, int play
 	playouts_stop3 = playouts;
 
 	// check every 1 second whether playout_rate has dropped under 10000 playouts/sec
-	if (elapsed_centis > 50 && playouts_stop3 > 1000) {
+	if (elapsed_centis > 5 && playouts_stop3 > 1000) {
 		if (elapsed_centis - last_update3 >= 100) { // run once every 1 second
 			playouts_stop3 = playouts;
 			if (playouts3 >= playouts_stop3) {
@@ -664,7 +664,7 @@ size_t UCTSearch::prune_noncontenders(int elapsed_centis, int time_for_move, int
     }
 	est_playouts_left2 = est_playouts_left(elapsed_centis, time_for_move, static_cast<int>(m_playouts));
     min_required_visits = (((3 * Nfirst) + Nsecond) / 4) - est_playouts_left2;
-	if (elapsed_centis > 100 && est_playouts_left3 != est_playouts_left2) {
+	if (elapsed_centis > 1 && est_playouts_left3 != est_playouts_left2) {
 		//myprintf("\n%d min_required_visits\n", static_cast<int>(min_required_visits));
 		//myprintf("\n%d Nfirst\n", static_cast<int>(Nfirst));
 		//myprintf("\n%d Nsecond\n", static_cast<int>(Nsecond));
@@ -814,6 +814,8 @@ bool UCTSearch::stop_thinking(int elapsed_centis, int time_for_move, int playout
 
 	//Time start2;
 	//int playout_rate_stop = playouts_stop - playouts2;
+	return m_playouts >= m_maxplayouts
+		|| m_root->get_visits() >= m_maxvisits;
 	playouts_stop = playouts;
 	//Time elapsed2;
 	//int elapsed_centis2 = Time::timediff_centis(start2, elapsed2);
@@ -913,7 +915,7 @@ int UCTSearch::think(int color, passflag_t passflag) {
     m_root->kill_superkos(m_rootstate);
     if (cfg_noise) {
         // Adjusting the Dirichlet noise's alpha constant to the board size
-        auto alpha = 0.03f * 361.0f / BOARD_SQUARES;
+        auto alpha = 100.0f * 361.0f / BOARD_SQUARES;
 
         m_root->dirichlet_noise(0.25f, alpha);
     }
