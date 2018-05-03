@@ -39,6 +39,7 @@ along with Leela Zero.  If not, see <http://www.gnu.org/licenses/>.
 using namespace Utils;
 
 constexpr int UCTSearch::UNLIMITED_PLAYOUTS;
+Time start;
 
 UCTSearch::UCTSearch(GameState& g)
 	: m_rootstate(g) {
@@ -572,7 +573,9 @@ bool UCTSearch::stop_thinking(int elapsed_centis, int time_for_move) const {
 void UCTWorker::operator()() {
 	do {
 		auto currstate = std::make_unique<GameState>(m_rootstate);
-		auto result = m_search->play_simulation(*currstate, m_root, 0);
+		Time elapsed;                                               // lizzie
+		int elapsed_centis = Time::timediff_centis(start, elapsed); // lizzie
+		auto result = m_search->play_simulation(*currstate, m_root, elapsed_centis);
 		if (result.valid()) {
 			m_search->increment_playouts();
 		}
@@ -616,13 +619,15 @@ int UCTSearch::think(int color, passflag_t passflag) {
 	do {
 		auto currstate = std::make_unique<GameState>(m_rootstate);
 
-		auto result = play_simulation(*currstate, m_root.get(), 0);
+		Time elapsed;
+		int elapsed_centis = Time::timediff_centis(start, elapsed);
+
+		auto result = play_simulation(*currstate, m_root.get(), elapsed_centis);
 		if (result.valid()) {
 			increment_playouts();
 		}
 
-		Time elapsed;
-		int elapsed_centis = Time::timediff_centis(start, elapsed);
+
 
 		// output some stats every few seconds
 		// check if we should still search

@@ -285,22 +285,28 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int elapsed_centis) 
 
 		// THIS MAKES EVERY POSITION GET AT LEAST 1 VISIT
 
-		if (is_root) {
-			if (is_root && child->get_visits() < 1) {
-				best = &child;
-				return best->get();
-			}
-		}
+		//if (is_root) {
+		//	if (is_root && child->get_visits() < 1) {
+		//		best = &child;
+		//		return best->get();
+		//	}
+		//}
 
 		// CUSTOM ROOT NODE MIN VISITS HERE:
 
 		int max_playouts_til_regular_value = 1600;
 		int mpt = max_playouts_til_regular_value;
 
+		
+		if (is_root) {
+			if (child->get_visits() >= 30000) {
 
-		if (is_root && elapsed_centis >= 300 && elapsed_centis <= 1000) {
-			if (child->get_visits() <= (200)) {
-				if ((winrate > (0.60 * best_winrate))) {
+			}
+		}
+
+		if (is_root && !is_root) {
+			if (elapsed_centis <= 1000 && elapsed_centis >= 500 && child->get_visits() <= (500)) {
+				if ((winrate > (0.90 * best_winrate))) {
 					//best_winrate = winrate;
 					best = &child;
 					if (winrate > best_winrate) {
@@ -320,8 +326,8 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int elapsed_centis) 
 			}
 			
 			//if (elapsed_centis > 1000 && elapsed_centis <= 2000 && child->get_visits() <= (1000)) {
-			if (elapsed_centis > 1000 && child->get_visits() <= (1000)) {
-				if ((winrate > (0.80 * best_winrate))) {
+			if (is_root && elapsed_centis > 2000 && elapsed_centis <= 3000 && child->get_visits() <= (1000)) {
+				if ((winrate > (0.95 * best_winrate))) {
 					//best_winrate = winrate;
 					best = &child;
 					if (winrate > best_winrate) {
