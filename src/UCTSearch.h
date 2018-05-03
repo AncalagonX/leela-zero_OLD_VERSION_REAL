@@ -98,7 +98,7 @@ public:
     void ponder();
     bool is_running() const;
     void increment_playouts();
-    SearchResult play_simulation(GameState& currstate, UCTNode* const node);
+    SearchResult play_simulation(GameState& currstate, UCTNode* const node, int elapsed_centis);
 
 private:
     float get_min_psa_ratio() const;

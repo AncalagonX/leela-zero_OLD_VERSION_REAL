@@ -237,7 +237,7 @@ void UCTNode::accumulate_eval(float eval) {
     atomic_add(m_blackevals, double(eval));
 }
 
-UCTNode* UCTNode::uct_select_child(int color, bool is_root) {
+UCTNode* UCTNode::uct_select_child(int color, bool is_root, int elapsed_centis) {
     LOCK(get_mutex(), lock);
 
     // Count parentvisits manually to avoid issues with transpositions.
@@ -264,7 +264,8 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root) {
     auto fpu_eval = get_net_eval(color) - fpu_reduction;
 
     auto best = static_cast<UCTNodePointer*>(nullptr);
-    auto best_value = std::numeric_limits<double>::lowest();
+	auto best_value = std::numeric_limits<double>::lowest();
+	auto best_winrate = std::numeric_limits<double>::lowest();
 
     for (auto& child : m_children) {
         if (!child.active()) {
@@ -280,6 +281,74 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root) {
         auto puct = cfg_puct * psa * (numerator / denom);
         auto value = winrate + puct;
         assert(value > std::numeric_limits<double>::lowest());
+
+
+		// THIS MAKES EVERY POSITION GET AT LEAST 1 VISIT
+
+		if (is_root) {
+			if (is_root && child->get_visits() < 1) {
+				best = &child;
+				return best->get();
+			}
+		}
+
+		// CUSTOM ROOT NODE MIN VISITS HERE:
+
+		int max_playouts_til_regular_value = 1600;
+		int mpt = max_playouts_til_regular_value;
+
+
+		if (is_root && elapsed_centis >= 300) {
+			if (child->get_visits() <= (10)) {
+				if ((winrate > (0.95 * best_winrate))) {
+					//best_winrate = winrate;
+					best = &child;
+					if (winrate > best_winrate) {
+						best_winrate = winrate;
+					}
+					return best->get();
+				}
+				if (winrate > best_winrate) {
+					best_winrate = winrate;
+					best = &child;
+					return best->get();
+				}
+				//if (value > best_value) {
+				//	best_value = value;
+				//	best = &child;
+				//}
+			}
+			//if (max_playouts_til_regular_value >= 1100 && child->get_visits() <= (200) && child->get_visits() > (100)) {
+			if (elapsed_centis >= 600 && child->get_visits() <= (200)) {
+				if ((winrate > (0.98 * best_winrate))) {
+					//best_winrate = winrate;
+					best = &child;
+					if (winrate > best_winrate) {
+						best_winrate = winrate;
+					}
+					return best->get();
+				}
+				if (winrate > best_winrate) {
+					best_winrate = winrate;
+					best = &child;
+					return best->get();
+				}
+				//if (value > best_value) {
+				//	best_value = value;
+				//	best = &child;
+				//}
+			}
+		}
+
+
+		// EXTRA IF CLAUSE HERE FOR SAFETY:
+
+
+
+		if (parentvisits <= 1) {
+			best = &child;
+			return best->get();
+		}
 
         if (value > best_value) {
             best_value = value;

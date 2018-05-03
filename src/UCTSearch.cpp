@@ -158,7 +158,7 @@ float UCTSearch::get_min_psa_ratio() const {
 }
 
 SearchResult UCTSearch::play_simulation(GameState & currstate,
-	UCTNode* const node) {
+	UCTNode* const node, int elapsed_centis) {
 	const auto color = currstate.get_to_move();
 	auto result = SearchResult{};
 
@@ -182,7 +182,7 @@ SearchResult UCTSearch::play_simulation(GameState & currstate,
 	}
 
 	if (node->has_children() && !result.valid()) {
-		auto next = node->uct_select_child(color, node == m_root.get());
+		auto next = node->uct_select_child(color, node == m_root.get(), elapsed_centis);
 		auto move = next->get_move();
 
 		currstate.play_move(move);
@@ -190,7 +190,7 @@ SearchResult UCTSearch::play_simulation(GameState & currstate,
 			next->invalidate();
 		}
 		else {
-			result = play_simulation(currstate, next);
+			result = play_simulation(currstate, next, elapsed_centis);
 		}
 	}
 
@@ -572,7 +572,7 @@ bool UCTSearch::stop_thinking(int elapsed_centis, int time_for_move) const {
 void UCTWorker::operator()() {
 	do {
 		auto currstate = std::make_unique<GameState>(m_rootstate);
-		auto result = m_search->play_simulation(*currstate, m_root);
+		auto result = m_search->play_simulation(*currstate, m_root, 0);
 		if (result.valid()) {
 			m_search->increment_playouts();
 		}
@@ -616,7 +616,7 @@ int UCTSearch::think(int color, passflag_t passflag) {
 	do {
 		auto currstate = std::make_unique<GameState>(m_rootstate);
 
-		auto result = play_simulation(*currstate, m_root.get());
+		auto result = play_simulation(*currstate, m_root.get(), 0);
 		if (result.valid()) {
 			increment_playouts();
 		}
@@ -686,14 +686,20 @@ void UCTSearch::ponder() {
 	int last_update = 0;                                            // lizzie
 	do {
 		auto currstate = std::make_unique<GameState>(m_rootstate);
-		auto result = play_simulation(*currstate, m_root.get());
+
+		Time elapsed;                                               // lizzie
+		int elapsed_centis = Time::timediff_centis(start, elapsed); // lizzie
+
+		auto result = play_simulation(*currstate, m_root.get(), elapsed_centis);
 		if (result.valid()) {
 			increment_playouts();
 		}
 		keeprunning = is_running();
 		keeprunning &= !stop_thinking(0, 1);
-		Time elapsed;                                               // lizzie
-		int elapsed_centis = Time::timediff_centis(start, elapsed); // lizzie
+		
+		//Time elapsed;                                               // lizzie <----- I MOVED THIS LINE UP ABOVE A BIT. SHOULD BE OKAY.
+		//int elapsed_centis = Time::timediff_centis(start, elapsed); // lizzie <----- I MOVED THIS LINE UP ABOVE A BIT. SHOULD BE OKAY.
+		
 		if (elapsed_centis - last_update > 10) {					// lizzie: output ponder data 10 times per second
 			last_update = elapsed_centis;                           // lizzie
 
