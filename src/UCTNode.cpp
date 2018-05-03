@@ -298,9 +298,9 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int elapsed_centis) 
 		int mpt = max_playouts_til_regular_value;
 
 
-		if (is_root && elapsed_centis >= 300) {
-			if (child->get_visits() <= (10)) {
-				if ((winrate > (0.95 * best_winrate))) {
+		if (is_root && elapsed_centis >= 300 && elapsed_centis <= 1000) {
+			if (child->get_visits() <= (200)) {
+				if ((winrate > (0.60 * best_winrate))) {
 					//best_winrate = winrate;
 					best = &child;
 					if (winrate > best_winrate) {
@@ -318,9 +318,10 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int elapsed_centis) 
 				//	best = &child;
 				//}
 			}
-			//if (max_playouts_til_regular_value >= 1100 && child->get_visits() <= (200) && child->get_visits() > (100)) {
-			if (elapsed_centis >= 600 && child->get_visits() <= (200)) {
-				if ((winrate > (0.98 * best_winrate))) {
+			
+			//if (elapsed_centis > 1000 && elapsed_centis <= 2000 && child->get_visits() <= (1000)) {
+			if (elapsed_centis > 1000 && child->get_visits() <= (1000)) {
+				if ((winrate > (0.80 * best_winrate))) {
 					//best_winrate = winrate;
 					best = &child;
 					if (winrate > best_winrate) {
@@ -343,12 +344,12 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root, int elapsed_centis) 
 
 		// EXTRA IF CLAUSE HERE FOR SAFETY:
 
+		// OH, THIS EXTRA CLAUSE HERE CRASHES LIZZIE. IT'S ACTUALLY NOT REALLY NEEDED:
 
-
-		if (parentvisits <= 1) {
-			best = &child;
-			return best->get();
-		}
+		//if (parentvisits <= 1) {
+		//	best = &child;
+		//	return best->get();
+		//}
 
         if (value > best_value) {
             best_value = value;
