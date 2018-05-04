@@ -694,7 +694,7 @@ void UCTSearch::ponder() {
 		keeprunning &= !stop_thinking(0, 1);
 		Time elapsed;                                               // lizzie
 		int elapsed_centis = Time::timediff_centis(start, elapsed); // lizzie
-		if (elapsed_centis - last_update > 10) {					// lizzie: output ponder data 10 times per second
+		if (elapsed_centis - last_update > 16) {					// lizzie: output ponder data 16 times per second
 			last_update = elapsed_centis;                           // lizzie
 
 			myprintf("~begin\n");                                   // lizzie
